@@ -1,0 +1,27 @@
+/* 
+ * Proyecto: Sistema de Ventas On-line "Doggy's" (Caso 19)
+ * 
+ * Justificación Arquitectónica: 
+ * Esta paleta responde al 'concern' transversal de Accesibilidad.
+ * Se utilizan fondos claros y textos oscuros para garantizar un alto 
+ * contraste, mejorando la legibilidad. Los tonos cálidos (rojo/amarillo)
+ * responden al contexto del negocio (comida rápida) para estimular el apetito.
+ */
+
+:root {
+  /* Colores de Marca */
+  --color-primario: #E63946;   /* Rojo Ketchup */
+  --color-secundario: #F4A261; /* Amarillo Mostaza */
+  
+  /* Colores de Fondo y Superficies */
+  --color-fondo: #F8F9FA;      /* Blanco Crema */
+  --color-tarjeta: #FFFFFF;    /* Blanco Puro */
+  
+  /* Colores de Texto */
+  --color-texto-oscuro: #2B2D42; /* Gris Carbón - Accesibilidad alto contraste */
+  --color-texto-claro: #8D99AE;  /* Gris Claro */
+  
+  /* Colores de Estado */
+  --color-exito: #2A9D8F;      /* Verde Menta - Feedback positivo */
+  --color-error: #D62828;      /* Rojo Intenso - Feedback negativo */
+}

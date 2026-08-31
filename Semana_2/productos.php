@@ -9,7 +9,6 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
-        <!--Navbar -->
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" href="index.php">
@@ -43,22 +42,20 @@
                 </div>
             </div>
         </nav>
-        <!--Container-->
         <div class="container-fluid bg-light p-5">
             <h1 class="text-center mb-4">
                 Productos
             </h1>
             <p class="text-center mb-5">
-                Encuentra notebooks, periféricos, componentes y otros.
+                Encuentra tus mejores productos.
             </p>
             <div class="row">
-                <!-- Producto 1 -->
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
                         <img src="img/notebook.jpg" class="card-img-top" alt="Notebook" style="height: 250px; object-fit: contain;">
                         <div class="card-body text-center">
                             <h4 class="card-title mt-3">
-                                Notebook
+                                Notebook Gamer PC
                             </h4>
                             <p class="card-text">
                                 i79700K<br>
@@ -76,13 +73,12 @@
                         </div>
                     </div>
                 </div>
-                <!-- Producto 2 -->
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
                         <img src="img/teclado.jpg" class="card-img-top" alt="Teclado Mecánico" style="height: 250px; object-fit: contain;">
                         <div class="card-body text-center">
                             <h4 class="card-title mt-3">
-                                Teclado Mecánico
+                                Logitech G Pro Keyboard
                             </h4>
                             <p class="card-text">
                                 Switch Red<br>
@@ -99,13 +95,12 @@
                         </div>
                     </div>
                 </div>
-                <!-- Producto 3 -->
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
                         <img src="img/headset.png" class="card-img-top" alt="Headset Gamer" style="height: 250px; object-fit: contain;">
                         <div class="card-body text-center">
                             <h4 class="card-title mt-3">
-                                Headset Gamer
+                                Logitech G Pro X
                             </h4>
                             <p class="card-text">
                                 Sonido 7.1<br>
@@ -122,7 +117,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Producto 4 -->
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
                         <img src="img/monitor.jpg" class="card-img-top" alt="Monitor Samsung" style="height: 250px; object-fit: contain;">
@@ -145,7 +139,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Producto 5 -->
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
                         <img src="img/mouse.jpg" class="card-img-top" alt="Mouse Gamer" style="height: 250px; object-fit: contain;">
@@ -168,7 +161,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Producto 6 -->
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
                         <img src="img/ssd.jpg" class="card-img-top" alt="SSD 1 TB" style="height: 250px; object-fit: contain;">
@@ -200,7 +192,6 @@
                 </a>
             </div>
         </div>
-        <!--Footer-->
         <div class="container-fluid bg-dark p-3">
             <div class="row">
                 <div class="col-4"></div>

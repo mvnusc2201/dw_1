@@ -7,7 +7,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>        
     </head>
     <body>
-        <!--Navbar -->
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" href="index.php">Logo</a>
@@ -37,18 +36,15 @@
                 </div>                               
             </div>
         </nav>
-        <!--Container-->
         <div class="container-fluid bg-warning">
             <a href="index.php">Volver</a>
         </div>
-        <!--Footer-->
         <div class="container-fluid bg-dark">
             <div class="row">
                 <div class="col-4"></div>
-                <div class="col-4" style="color:white"><strong>MiEmpresa@2026</strong></div>
+                <div class="col-4" style="color:white"><strong>TechStore@2026</strong></div>
                 <div class="col-4"></div>
             </div>
         </div>
-        <!--Modal-->
     </body>
 </html>

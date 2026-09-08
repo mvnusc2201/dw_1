@@ -19,6 +19,7 @@ const typeDefs = `#graphql
     type Query {
         clientes: [Cliente!]!
         cliente(id: ID!): Cliente
+        totalClientes: Int!
     }
 
     type Mutation {
@@ -43,13 +44,14 @@ const resolvers = {
     Query: {
         clientes: async () => {
             return await Cliente.find();
-        },
-
-        cliente: async (_, { id }) => {
-            return await Cliente.findById(id);
-        }
     },
-
+    cliente: async (_, { id }) => {
+        return await Cliente.findById(id);
+    },
+    totalClientes: async () => {
+        return await Cliente.countDocuments();
+    }
+},
     Mutation: {
         agregarCliente: async (_, { nombre, email, telefono }) => {
             const cliente = new Cliente({

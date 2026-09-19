@@ -1,0 +1,258 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Fuentes — archivos ubicados en public/fonts/
+   --------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'Anton';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/anton-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/poppins-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/poppins-500-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/poppins-600-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/poppins-700-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ---------------------------------------------------------------------------
+   Colores y configuraciones principales
+   --------------------------------------------------------------------------- */
+@theme {
+  --color-doggis-yellow: #ffd400;
+  --color-doggis-yellow-deep: #f5c400;
+  --color-doggis-red: #e1004c;
+  --color-doggis-red-dark: #c30042;
+  --color-doggis-coral: #c8544f;
+  --color-ink: #1b1b1b;
+  --color-muted: #6b6b6b;
+  --color-line: #ededed;
+  --color-surface: #f7f7f7;
+  --color-status-open-bg: #e6f6ea;
+  --color-status-open-fg: #1b7f3b;
+  --color-status-soon-bg: #fdecec;
+  --color-status-soon-fg: #c0392b;
+  --color-whatsapp: #25d366;
+
+  --font-display: 'Anton', system-ui, sans-serif;
+  --font-body: 'Poppins', system-ui, sans-serif;
+
+  --text-section-title: 30px;
+  --text-hero: 40px;
+  --text-club-title: 34px;
+
+  --shadow-card: 0 6px 20px rgb(0 0 0 / 0.1);
+  --shadow-card-hover: 0 14px 34px rgb(0 0 0 / 0.18);
+
+  --container-page: 1180px;
+  --container-shell: 1440px;
+}
+
+/* ---------------------------------------------------------------------------
+   Estilos base
+   --------------------------------------------------------------------------- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    background-color: #fff;
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-doggis-red);
+    outline-offset: 2px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Animaciones al hacer scroll
+   --------------------------------------------------------------------------- */
+@layer base {
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    .reveal,
+    .reveal.is-visible {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Clases reutilizables
+   --------------------------------------------------------------------------- */
+@layer components {
+  .page-container {
+    margin-inline: auto;
+    max-width: var(--container-page);
+    padding-inline: calc(var(--spacing) * 6);
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: var(--text-section-title);
+    line-height: 1;
+    letter-spacing: 0.01em;
+    text-align: center;
+  }
+
+  .section-subtitle {
+    margin-top: calc(var(--spacing) * 3);
+    text-align: center;
+    font-size: var(--text-sm);
+    font-weight: 500;
+  }
+
+  .card-surface {
+    background-color: #fff;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    transition:
+      box-shadow 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  .card-surface:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-4px);
+  }
+
+  .badge-pill {
+    display: inline-block;
+    border-radius: var(--radius-full);
+    padding-inline: calc(var(--spacing) * 3);
+    padding-block: calc(var(--spacing) * 1);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .btn-pill {
+    border-radius: var(--radius-full);
+    padding-inline: calc(var(--spacing) * 7);
+    padding-block: calc(var(--spacing) * 3);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: #fff;
+    background-color: var(--color-doggis-red);
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s ease;
+    cursor: pointer;
+  }
+
+  .btn-pill:hover {
+    background-color: var(--color-doggis-red-dark);
+    transform: translateY(-2px);
+  }
+
+  .social-bubble {
+    width: calc(var(--spacing) * 9);
+    height: calc(var(--spacing) * 9);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(255 255 255 / 0.8);
+    transition: background-color 0.2s ease;
+  }
+
+  .social-bubble:hover {
+    background-color: #fff;
+  }
+
+  .social-rail-bubble {
+    width: calc(var(--spacing) * 10);
+    height: calc(var(--spacing) * 10);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-lg);
+    transition: transform 0.2s ease;
+  }
+
+  .social-rail-bubble:hover {
+    transform: scale(1.1);
+  }
+
+  .footer-link {
+    transition: opacity 0.2s ease;
+  }
+
+  .footer-link:hover {
+    text-decoration: underline;
+  }
+}

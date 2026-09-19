@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="preload"
+      href="/fonts/poppins-400-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/anton-400-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <meta
+      name="description"
+      content="Pide Doggis a domicilio o retira en tienda. Completos, snacks, chicken burgers, wraps y helados con promos del mes."
+    />
+    <title>Doggis Delivery — Pide tus completos favoritos</title>
+  </head>
+
+  <body>
+    <!-- Promoción -->
+    <div class="w-full bg-white text-center px-4 py-2">
+      <p class="text-[13px] font-semibold text-ink">
+        Pide y retira en tiendas con 20% dcto. Canjea el cupón:
+        <span class="text-doggis-red">Retira con 20% OFF</span>
+      </p>
+    </div>
+
+    <!-- Encabezado -->
+    <header class="w-full bg-doggis-yellow">
+      <div
+        class="mx-auto max-w-[1440px] px-6 h-[58px] flex items-center justify-between"
+      >
+        <div class="flex items-center gap-4">
+          <button
+            type="button"
+            aria-label="Abrir menú de navegación"
+            class="w-8 h-8 rounded-md bg-white/85 shadow-xs flex items-center justify-center transition-colors hover:bg-white cursor-pointer"
+          >
+            <span id="iconMenu" class="flex"></span>
+          </button>
+          <button
+            type="button"
+            aria-label="Ver carrito"
+            class="w-8 h-8 flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
+          >
+            <span id="iconCart" class="flex"></span>
+          </button>
+        </div>
+
+        <a href="#" class="shrink-0" aria-label="Doggis — inicio">
+          <img id="logoImg" alt="Logo de Doggis" class="h-[30px] w-auto" decoding="async" />
+        </a>
+
+        <div class="flex items-center gap-6">
+          <button
+            type="button"
+            class="flex items-center gap-2 text-sm font-semibold transition-colors hover:text-doggis-red cursor-pointer"
+          >
+            <span id="iconLogin" class="flex"></span>
+            <span class="hidden md:inline">Login</span>
+          </button>
+          <img
+            id="flagImg"
+            alt="Chile"
+            class="w-6 h-6 rounded-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </div>
+    </header>
+
+    <!-- Sección principal -->
+    <section class="relative w-full h-[390px] overflow-hidden">
+      <img
+        id="heroImg"
+        alt="Completos Doggis recién preparados"
+        class="absolute inset-0 w-full h-full object-cover"
+        decoding="async"
+      />
+      <div
+        class="absolute inset-0 bg-gradient-to-r from-black/35 via-black/10 to-transparent"
+      ></div>
+      <div class="relative mx-auto max-w-[1440px] h-full px-6 flex flex-col justify-center">
+        <h1
+          class="font-display text-white text-hero leading-none drop-shadow-[0_3px_10px_rgba(0,0,0,.45)]"
+        >
+          ¡PIDE AQUÍ!
+        </h1>
+        <a
+          href="#categorias"
+          class="mt-5 inline-flex w-fit items-center justify-center rounded-md bg-doggis-coral px-9 py-3 text-white text-[15px] font-medium shadow-lg transition-all duration-200 hover:bg-doggis-red hover:-translate-y-0.5"
+        >
+          Hacer un pedido
+        </a>
+      </div>
+    </section>
+
+    <!-- Categorías -->
+    <section id="categorias" class="page-container pt-14 pb-12">
+      <h2 class="reveal section-title">¡NUESTROS BAJONES!</h2>
+      <div
+        id="categoryGrid"
+        class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-9 gap-y-8"
+      ></div>
+    </section>
+
+    <!-- Promociones del mes -->
+    <section class="bg-doggis-yellow py-14">
+      <div class="page-container">
+        <h2 class="reveal section-title">¡PROMOS DEL MES!</h2>
+        <p class="reveal section-subtitle text-ink/70">
+          Válidas hasta agotar stock en tiendas participantes.
+        </p>
+        <div
+          id="promoGrid"
+          class="mt-9 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        ></div>
+      </div>
+    </section>
+
+    <!-- Aplicaciones de delivery -->
+    <section class="page-container py-16">
+      <h2 class="reveal section-title">MMM!! QUIERO DOGGIS POR MI APP</h2>
+      <div
+        id="deliveryAppGrid"
+        class="mt-9 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-9"
+      ></div>
+    </section>
+
+    <!-- Buscar tienda -->
+    <section class="bg-surface py-16">
+      <div class="page-container">
+        <h2 class="reveal section-title">ENCUENTRA TU TIENDA MAS CERCANA</h2>
+        <p class="reveal section-subtitle text-muted">
+          Más de 120 tiendas en todo Chile. Retira en 15 minutos.
+        </p>
+
+        <form
+          id="storeSearchForm"
+          class="reveal mt-8 flex flex-wrap items-center justify-center gap-3"
+          role="search"
+        >
+          <div
+            class="flex items-center gap-3 w-full max-w-[420px] rounded-full bg-white border border-line px-5 py-3 shadow-xs transition-colors focus-within:border-doggis-red"
+          >
+            <span id="iconSearchPin" class="flex shrink-0"></span>
+            <label class="sr-only" for="storeSearchInput">Comuna o dirección</label>
+            <input
+              id="storeSearchInput"
+              type="search"
+              autocomplete="off"
+              placeholder="Ingresa tu comuna o dirección"
+              class="w-full bg-transparent text-sm outline-hidden placeholder:text-muted"
+            />
+          </div>
+          <button type="submit" class="btn-pill">Buscar</button>
+        </form>
+
+        <div
+          id="storeList"
+          class="mt-9 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+        ></div>
+        <p id="storeEmptyState" class="mt-6 text-center text-sm text-muted" hidden>
+          No encontramos tiendas para tu búsqueda. Prueba con otra comuna.
+        </p>
+      </div>
+    </section>
+
+    <!-- Doggis Club y aplicación -->
+    <section class="bg-ink py-16 overflow-hidden">
+      <div class="page-container grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+        <div class="reveal">
+          <span class="badge-pill bg-doggis-yellow text-ink">Doggis Club</span>
+          <h2 class="font-display text-white text-club-title leading-[1.05] mt-4">
+            DESCARGA LA APP Y<br />JUNTA DOGGIPUNTOS
+          </h2>
+          <p class="mt-4 text-[14px] leading-relaxed text-white/70 max-w-[440px]">
+            Acumula puntos con cada pedido, canjéalos por completos, papas y helados.
+            Además, envío gratis en tu primera compra desde la app.
+          </p>
+          <ul id="clubPerksList" class="mt-6 space-y-3"></ul>
+
+          <div class="mt-7 flex flex-wrap items-center gap-3">
+            <a
+              href="#"
+              class="flex items-center gap-3 rounded-lg bg-white px-5 py-3 transition-transform duration-200 hover:-translate-y-0.5"
+            >
+              <span id="iconAppStore" class="flex"></span>
+              <span class="text-left leading-tight">
+                <span class="block text-[9px] font-medium text-muted uppercase">Descarga en</span>
+                <span class="block text-[14px] font-semibold text-ink">App Store</span>
+              </span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center gap-3 rounded-lg bg-white px-5 py-3 transition-transform duration-200 hover:-translate-y-0.5"
+            >
+              <span id="iconGooglePlay" class="flex"></span>
+              <span class="text-left leading-tight">
+                <span class="block text-[9px] font-medium text-muted uppercase">Descarga en</span>
+                <span class="block text-[14px] font-semibold text-ink">Google Play</span>
+              </span>
+            </a>
+          </div>
+        </div>
+
+        <div class="reveal relative">
+          <div class="absolute -inset-6 rounded-[44px] bg-doggis-yellow/15 blur-2xl"></div>
+          <div class="relative rounded-[32px] bg-doggis-yellow p-8">
+            <div class="rounded-2xl overflow-hidden shadow-2xl">
+              <img
+                id="clubPreviewImg"
+                alt="Chicken burger disponible en la app Doggis"
+                class="w-full h-[250px] object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div
+              class="mt-5 flex items-center justify-between rounded-2xl bg-white px-5 py-4 shadow-lg"
+            >
+              <div>
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-muted">
+                  Tus Doggipuntos
+                </p>
+                <p class="font-display text-[26px] leading-none text-doggis-red">1.240</p>
+              </div>
+              <button
+                type="button"
+                class="rounded-full bg-ink px-5 py-2.5 text-[12px] font-semibold text-white transition-colors hover:bg-doggis-red cursor-pointer"
+              >
+                Canjear
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pie de página -->
+    <footer class="bg-doggis-yellow pt-14 pb-8">
+      <div
+        class="page-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.1fr_1fr_1fr_1fr] gap-10"
+      >
+        <div>
+          <img
+            id="footerLogoImg"
+            alt="Logo de Doggis"
+            class="h-[62px] w-auto"
+            loading="lazy"
+            decoding="async"
+          />
+          <div id="footerSocials" class="mt-6 flex items-center gap-3"></div>
+        </div>
+        <div
+          id="footerColumns"
+          class="contents"
+        ></div>
+      </div>
+
+      <div
+        class="mt-12 flex items-center justify-center gap-2 text-[12px] font-semibold text-doggis-red"
+      >
+        <span>Powered by</span>
+        <span class="font-display text-[15px] tracking-tight">JUSTO</span>
+      </div>
+    </footer>
+
+    <!-- Redes sociales -->
+    <div
+      id="socialRail"
+      class="fixed right-0 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-50 pr-1"
+    ></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

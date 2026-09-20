@@ -1,0 +1,102 @@
+/* ==========================================================================
+   Fuentes Locales
+   ========================================================================== */
+@font-face {
+  font-family: 'Anton';
+  src: url('./public/fonts/anton-400-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('./public/fonts/poppins-400-latin.woff2') format('woff2');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('./public/fonts/poppins-500-latin.woff2') format('woff2');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('./public/fonts/poppins-600-latin.woff2') format('woff2');
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('./public/fonts/poppins-700-latin.woff2') format('woff2');
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   Paleta de Colores Oficial (Doggy's Caso 19)
+   ========================================================================== */
+:root {
+  /* Colores principales de la marca */
+  --color-doggis-yellow: #F4A261;      /* Amarillo Mostaza */
+  --color-doggis-red: #E63946;         /* Rojo Ketchup */
+  --color-doggis-coral: #E63946;       /* Igual al rojo para botones */
+  
+  /* Colores para textos y fondos */
+  --color-ink: #2B2D42;                /* Gris Oscuro para textos principales */
+  --color-muted: #8D99AE;              /* Gris Claro para textos secundarios */
+  --color-line: #EDEDED;               /* Gris muy claro para bordes */
+  
+  /* Fondos de la página */
+  --color-fondo: #F8F9FA;              /* Blanco Crema (Fondo de la web) */
+  --color-surface: #FFFFFF;            /* Blanco Puro (Fondo de tarjetas) */
+
+  /* Tipografías */
+  --font-display: 'Anton', system-ui, sans-serif;
+  --font-body: 'Poppins', system-ui, sans-serif;
+}
+
+/* ==========================================================================
+   Configuraciones base de la página
+   ========================================================================== */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  background-color: var(--color-fondo);
+  color: var(--color-ink);
+  overflow-x: hidden;
+}
+
+/* Borde rojo cuando navegas usando la tecla TAB (Accesibilidad) */
+:focus-visible {
+  outline: 2px solid var(--color-doggis-red);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Efectos de aparición al bajar en la página (Scroll Reveal)
+   ========================================================================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+/* Esta clase se agrega con el JavaScript para hacer aparecer las cosas */
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Apaga las animaciones si el celular del usuario está en modo ahorro o accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

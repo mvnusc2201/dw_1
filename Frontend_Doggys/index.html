@@ -335,15 +335,17 @@
         menu.setAttribute('data-open', estado ? 'true' : 'false');
         btn.setAttribute('aria-expanded', estado ? 'true' : 'false');
       }
-      function estaAbierto() { return menu.getAttribute('data-open') === 'true'; }
+      function estaAbierto() { 
+        return menu.getAttribute('data-open') === 'true'; 
+      }
 
-      // Abrir / cerrar con el botón
+      // 1. Abrir / cerrar con el botón
       btn.addEventListener('click', function (e) {
         e.stopPropagation();
         abrir(!estaAbierto());
       });
 
-      // Al elegir una opción: se cierra el menú 
+      // 2. Cerrar al elegir una opción
       menu.addEventListener('click', function (e) {
         var enlace = e.target.closest('a');
         if (!enlace) return;
@@ -351,13 +353,19 @@
         abrir(false);
       });
 
-      // Cerrar al hacer clic fuera 
-        if (estaAbierto() && !menu.contains(e.target)) abrir(false);
+      // 3. Cerrar al hacer clic fuera
+      document.addEventListener('click', function (e) {
+        if (estaAbierto() && !menu.contains(e.target) && !btn.contains(e.target)) {
+          abrir(false);
+        }
       });
+
+      // 4. Cerrar con Escape
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && estaAbierto()) { abrir(false); btn.focus(); }
+        if (e.key === 'Escape' && estaAbierto()) { 
+          abrir(false); 
+          btn.focus(); 
+        }
       });
     })();
   </script>
-</body>
-</html>

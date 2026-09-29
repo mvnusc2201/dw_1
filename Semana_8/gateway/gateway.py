@@ -161,3 +161,34 @@ async def ordenes(
             status_code=503,
             detail="Backend API 2 no disponible"
         )
+
+
+# --- NUEVO ENDPOINT AGREGADO ---
+@app.get("/api/health")
+async def health(
+    token: str = Depends(validar_token_gateway)
+):
+    try:
+        headers = {
+            "Authorization": f"Bearer {TOKEN_BACKEND_1}"
+        }
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"{BACKEND_URL}/health",
+                headers=headers
+            )
+
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail="Error al acceder al Backend API 1"
+            )
+
+        return response.json()
+
+    except httpx.RequestError:
+        raise HTTPException(
+            status_code=503,
+            detail="Backend API 1 no disponible"
+        )

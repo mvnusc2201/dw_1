@@ -1,49 +1,59 @@
 import os
+import secrets
 
-from fastapi import FastAPI, Depends, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import FastAPI, Header, HTTPException, Depends
 from dotenv import load_dotenv
 
 
 load_dotenv()
 
 app = FastAPI(
-    title="Backend API 1 Seguritizado",
-    description="Backend protegido con Bearer Token"
+    title="Protected Backend API",
+    description="Backend protegido para aceptar solicitudes del API Gateway"
 )
 
-security = HTTPBearer()
+INTERNAL_GATEWAY_SECRET = os.getenv(
+    "INTERNAL_GATEWAY_SECRET"
+)
 
-TOKEN_BACKEND = os.getenv("TOKEN_BACKEND")
+if not INTERNAL_GATEWAY_SECRET:
+    raise RuntimeError(
+        "INTERNAL_GATEWAY_SECRET no esta configurado"
+    )
 
 
-def validar_token(
-    credentials: HTTPAuthorizationCredentials = Depends(security)
+def verify_gateway(
+    x_gateway_secret: str = Header(default="")
 ):
-    if credentials.credentials != TOKEN_BACKEND:
+    valid = secrets.compare_digest(
+        x_gateway_secret,
+        INTERNAL_GATEWAY_SECRET
+    )
+
+    if not valid:
         raise HTTPException(
             status_code=403,
-            detail="Token inválido"
+            detail="Solicitud no autorizada desde Gateway"
         )
-
-    return credentials.credentials
 
 
 @app.get("/health")
-def health(
-    token: str = Depends(validar_token)
-):
+def health():
     return {
         "status": "OK",
-        "service": "Backend API 1"
+        "service": "Backend API"
     }
 
 
-@app.get("/products")
+@app.get(
+    "/products",
+    dependencies=[Depends(verify_gateway)]
+)
 def products(
-    token: str = Depends(validar_token)
+    x_authenticated_client: str | None = Header(default=None)
 ):
     return {
+        "authenticated_client": x_authenticated_client,
         "products": [
             {"id": 1, "name": "Notebook", "price": 900000},
             {"id": 2, "name": "Monitor", "price": 250000},
@@ -52,11 +62,15 @@ def products(
     }
 
 
-@app.get("/orders")
+@app.get(
+    "/orders",
+    dependencies=[Depends(verify_gateway)]
+)
 def orders(
-    token: str = Depends(validar_token)
+    x_authenticated_client: str | None = Header(default=None)
 ):
     return {
+        "authenticated_client": x_authenticated_client,
         "orders": [
             {"id": 1001, "status": "paid"},
             {"id": 1002, "status": "pending"},

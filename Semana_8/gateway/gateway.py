@@ -1,193 +1,243 @@
 import os
+import secrets
 
 import httpx
 
-from fastapi import FastAPI, Depends, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
+
+from fastapi import (
+    FastAPI,
+    Depends,
+    HTTPException,
+    Request,
+    Response
+)
+
+from fastapi.security import (
+    HTTPBearer,
+    HTTPAuthorizationCredentials
+)
 
 
 load_dotenv()
 
+
 app = FastAPI(
-    title="API Gateway Seguritizado",
-    description="Gateway protegido con Bearer Token y conexión segura a backends"
+    title="Secure Local API Gateway",
+    description="API Gateway con Vault, Bearer Token y control de permisos"
 )
 
-security = HTTPBearer()
 
-BACKEND_URL = "http://localhost:9000"
-BACKEND_URL2 = "http://localhost:9100"
-
-TOKEN_GATEWAY = os.getenv("TOKEN_GATEWAY")
-TOKEN_BACKEND_1 = os.getenv("TOKEN_BACKEND_1")
-TOKEN_BACKEND_2 = os.getenv("TOKEN_BACKEND_2")
+security = HTTPBearer(auto_error=False)
 
 
-def validar_token_gateway(
-    credentials: HTTPAuthorizationCredentials = Depends(security)
-):
-    if credentials.credentials != TOKEN_GATEWAY:
-        raise HTTPException(
-            status_code=403,
-            detail="Token del gateway inválido"
+VAULT_ADDR = os.getenv(
+    "VAULT_ADDR",
+    "http://127.0.0.1:8200"
+)
+
+VAULT_TOKEN = os.getenv("VAULT_TOKEN")
+
+BACKEND_URL = os.getenv(
+    "BACKEND_URL",
+    "http://127.0.0.1:9000"
+)
+
+
+if not VAULT_TOKEN:
+    raise RuntimeError(
+        "VAULT_TOKEN no configurado"
+    )
+
+
+async def get_gateway_secrets():
+
+    url = f"{VAULT_ADDR}/v1/secret/data/gateway"
+
+    headers = {
+        "X-Vault-Token": VAULT_TOKEN
+    }
+
+    async with httpx.AsyncClient(timeout=5.0) as client:
+        response = await client.get(
+            url,
+            headers=headers
         )
 
-    return credentials.credentials
+    if response.status_code != 200:
+        raise HTTPException(
+            status_code=500,
+            detail="No fue posible acceder a Vault"
+        )
+
+    vault_response = response.json()
+
+    return vault_response["data"]["data"]
 
 
-@app.get("/")
-def inicio():
+async def authenticate_client(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+
+    if credentials is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Bearer token requerido"
+        )
+
+    vault_secrets = await get_gateway_secrets()
+
+    received_token = credentials.credentials
+
+    user_token = vault_secrets["user_token"]
+    admin_token = vault_secrets["admin_token"]
+
+
+    if secrets.compare_digest(
+        received_token,
+        user_token
+    ):
+        return {
+            "client_id": "usuario",
+            "role": "user",
+            "scopes": vault_secrets[
+                "user_scopes"
+            ].split(","),
+            "backend_secret": vault_secrets[
+                "backend_shared_secret"
+            ]
+        }
+
+
+    if secrets.compare_digest(
+        received_token,
+        admin_token
+    ):
+        return {
+            "client_id": "administrador",
+            "role": "admin",
+            "scopes": vault_secrets[
+                "admin_scopes"
+            ].split(","),
+            "backend_secret": vault_secrets[
+                "backend_shared_secret"
+            ]
+        }
+
+
+    raise HTTPException(
+        status_code=401,
+        detail="Token invalido"
+    )
+
+
+@app.get("/health")
+def health():
+
     return {
-        "mensaje": "API Gateway seguritizado funcionando"
+        "status": "OK",
+        "service": "API Gateway"
     }
 
 
-@app.get("/api/products")
-async def products(
-    token: str = Depends(validar_token_gateway)
+@app.api_route(
+    "/api/{path:path}",
+    methods=["GET", "POST", "PUT", "PATCH", "DELETE"]
+)
+async def proxy(
+    path: str,
+    request: Request,
+    auth=Depends(authenticate_client)
 ):
-    try:
-        headers = {
-            "Authorization": f"Bearer {TOKEN_BACKEND_1}"
-        }
 
-        async with httpx.AsyncClient() as client:
-            response = await client.get(
-                f"{BACKEND_URL}/products",
-                headers=headers
-            )
+    target_url = f"{BACKEND_URL}/{path}"
 
-        if response.status_code != 200:
-            raise HTTPException(
-                status_code=response.status_code,
-                detail="Error al acceder al Backend API 1"
-            )
 
-        return response.json()
+    required_scope = None
 
-    except httpx.RequestError:
+
+    if (
+        request.method == "GET"
+        and path == "products"
+    ):
+        required_scope = "products:read"
+
+
+    elif (
+        request.method == "GET"
+        and path == "orders"
+    ):
+        required_scope = "orders:read"
+
+
+    if (
+        required_scope
+        and required_scope not in auth["scopes"]
+    ):
         raise HTTPException(
-            status_code=503,
-            detail="Backend API 1 no disponible"
+            status_code=403,
+            detail="No tienes permisos para acceder a este recurso"
         )
 
 
-@app.get("/api/orders")
-async def orders(
-    token: str = Depends(validar_token_gateway)
-):
+    body = await request.body()
+
+
+    gateway_headers = {
+        "X-Gateway-Secret": auth[
+            "backend_secret"
+        ],
+        "X-Authenticated-Client": auth[
+            "client_id"
+        ]
+    }
+
+
+    content_type = request.headers.get(
+        "content-type"
+    )
+
+    if content_type:
+        gateway_headers[
+            "content-type"
+        ] = content_type
+
+
     try:
-        headers = {
-            "Authorization": f"Bearer {TOKEN_BACKEND_1}"
-        }
 
-        async with httpx.AsyncClient() as client:
-            response = await client.get(
-                f"{BACKEND_URL}/orders",
-                headers=headers
+        async with httpx.AsyncClient(
+            timeout=10.0
+        ) as client:
+
+            upstream = await client.request(
+                method=request.method,
+                url=target_url,
+                params=request.query_params,
+                content=body,
+                headers=gateway_headers
             )
 
-        if response.status_code != 200:
-            raise HTTPException(
-                status_code=response.status_code,
-                detail="Error al acceder al Backend API 1"
-            )
-
-        return response.json()
 
     except httpx.RequestError:
+
         raise HTTPException(
-            status_code=503,
-            detail="Backend API 1 no disponible"
+            status_code=502,
+            detail="Backend no disponible"
         )
 
 
-@app.get("/api/productos")
-async def productos(
-    token: str = Depends(validar_token_gateway)
-):
-    try:
-        headers = {
-            "Authorization": f"Bearer {TOKEN_BACKEND_2}"
-        }
+    response_headers = {}
 
-        async with httpx.AsyncClient() as client:
-            response = await client.get(
-                f"{BACKEND_URL2}/productos",
-                headers=headers
-            )
 
-        if response.status_code != 200:
-            raise HTTPException(
-                status_code=response.status_code,
-                detail="Error al acceder al Backend API 2"
-            )
+    if "content-type" in upstream.headers:
 
-        return response.json()
-
-    except httpx.RequestError:
-        raise HTTPException(
-            status_code=503,
-            detail="Backend API 2 no disponible"
+        response_headers["content-type"] = (
+            upstream.headers["content-type"]
         )
 
 
-@app.get("/api/ordenes")
-async def ordenes(
-    token: str = Depends(validar_token_gateway)
-):
-    try:
-        headers = {
-            "Authorization": f"Bearer {TOKEN_BACKEND_2}"
-        }
-
-        async with httpx.AsyncClient() as client:
-            response = await client.get(
-                f"{BACKEND_URL2}/ordenes",
-                headers=headers
-            )
-
-        if response.status_code != 200:
-            raise HTTPException(
-                status_code=response.status_code,
-                detail="Error al acceder al Backend API 2"
-            )
-
-        return response.json()
-
-    except httpx.RequestError:
-        raise HTTPException(
-            status_code=503,
-            detail="Backend API 2 no disponible"
-        )
-
-# --- NUEVO ENDPOINT AGREGADO ---
-@app.get("/api/health")
-async def health(
-    token: str = Depends(validar_token_gateway)
-):
-    try:
-        headers = {
-            "Authorization": f"Bearer {TOKEN_BACKEND_1}"
-        }
-
-        async with httpx.AsyncClient() as client:
-            response = await client.get(
-                f"{BACKEND_URL}/health",
-                headers=headers
-            )
-
-        if response.status_code != 200:
-            raise HTTPException(
-                status_code=response.status_code,
-                detail="Error al acceder al Backend API 1"
-            )
-
-        return response.json()
-
-    except httpx.RequestError as exc:
-        raise HTTPException(
-            status_code=503,
-            detail="Backend API 1 no disponible"
-        ) from exc
+    return Response(
+        content=upstream.content,
+        status_code=upstream.status_code,
+        headers=response_headers
+    )

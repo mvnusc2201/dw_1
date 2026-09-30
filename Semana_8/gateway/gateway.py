@@ -162,7 +162,6 @@ async def ordenes(
             detail="Backend API 2 no disponible"
         )
 
-
 # --- NUEVO ENDPOINT AGREGADO ---
 @app.get("/api/health")
 async def health(
@@ -187,8 +186,8 @@ async def health(
 
         return response.json()
 
-    except httpx.RequestError:
+    except httpx.RequestError as exc:
         raise HTTPException(
             status_code=503,
             detail="Backend API 1 no disponible"
-        )
+        ) from exc

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doggy's - Login y Sistema</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #F8F9FA; color: #2B2D42; padding: 2rem; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn { background-color: #E63946; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; margin: 5px 0; }
+        .btn:hover { background-color: #D62828; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;}
+        #panel-sistema { display: none; margin-top: 20px; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="color: #E63946;">🌭 Doggy's Security</h1>
+        
+        <!-- Panel de Login -->
+        <div id="panel-login">
+            <h3>Iniciar Sesión</h3>
+            <input type="text" id="username" placeholder="Usuario (ej. ana o ernesto)">
+            <input type="password" id="password" placeholder="Contraseña">
+            <button class="btn" onclick="iniciarSesion()">Entrar</button>
+            <p id="login-msg"></p>
+        </div>
+
+        <!-- Panel del Sistema (Se muestra al loguearse) -->
+        <div id="panel-sistema">
+            <h3>Bienvenido al sistema</h3>
+            <button class="btn" style="background-color: #F4A261; color: #2B2D42;" onclick="consultarPerfil()">Mi Perfil</button>
+            <button class="btn" style="background-color: #2A9D8F;" onclick="consultarProductos()">Ver Productos</button>
+            <button class="btn" style="background-color: #2B2D42;" onclick="cerrarSesion()">Cerrar Sesión (Logout)</button>
+            
+            <h4>Respuesta de la API:</h4>
+            <pre id="resultado">Esperando acción...</pre>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

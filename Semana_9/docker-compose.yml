@@ -1,0 +1,66 @@
+services:
+  vault:
+    image: hashicorp/vault:latest
+    cap_add: [IPC_LOCK]
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_TOKEN}
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+      VAULT_ADDR: http://127.0.0.1:8200
+    ports:
+      - "8200:8200"
+    healthcheck:
+      test: ["CMD", "vault", "status"]
+      interval: 3s
+      timeout: 3s
+      retries: 15
+
+  vault-init:
+    image: hashicorp/vault:latest
+    depends_on:
+      vault:
+        condition: service_healthy
+    environment:
+      VAULT_ADDR: http://vault:8200
+      VAULT_TOKEN: ${VAULT_TOKEN}
+    entrypoint:
+      - vault
+      - kv
+      - put
+      - secret/gateway
+      - auth_introspection_secret=${AUTH_INTROSPECTION_SECRET}
+      - backend_shared_secret=${INTERNAL_GATEWAY_SECRET}
+    restart: "no"
+
+  auth:
+    build: ./auth
+    environment:
+      AUTH_INTROSPECTION_SECRET: ${AUTH_INTROSPECTION_SECRET}
+
+  backend:
+    build: ./backend
+    environment:
+      INTERNAL_GATEWAY_SECRET: ${INTERNAL_GATEWAY_SECRET}
+
+  gateway:
+    build: ./gateway
+    depends_on:
+      vault-init:
+        condition: service_completed_successfully
+      auth:
+        condition: service_started
+      backend:
+        condition: service_started
+    environment:
+      VAULT_ADDR: http://vault:8200
+      VAULT_TOKEN: ${VAULT_TOKEN}
+      AUTH_SERVICE_URL: http://auth:8100
+      BACKEND_URL: http://backend:9000
+    ports:
+      - "8000:8000"
+
+  frontend:
+    image: nginx:alpine
+    volumes:
+      - ./Frontend:/usr/share/nginx/html:ro
+    ports:
+      - "5500:80"

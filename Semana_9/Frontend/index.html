@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doggis — Centro de operaciones</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://unpkg.com/@tailwindcss/browser@4.3.3/dist/index.global.js" crossorigin="anonymous"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --font-display: 'Anton', system-ui, sans-serif;
+      --brand-red: #E63946;
+      --brand-yellow: #F4A261;
+      --ink: #2B2D42;
+      --muted: #8D99AE;
+    }
+    body { font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: var(--ink); }
+  </style>
+</head>
+<body class="min-h-screen bg-white">
+
+  <div class="grid min-h-screen grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-2">
+
+    <!-- Columna izquierda: visual -->
+    <div class="relative h-64 md:h-auto overflow-hidden">
+      <img src="img/Hero.png" alt="" class="absolute inset-0 h-full w-full object-cover" aria-hidden="true">
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--ink)]/95 via-[var(--brand-red)]/60 to-[var(--brand-yellow)]/25"></div>
+
+      <!-- Logo arriba -->
+      <div class="absolute left-6 top-6 md:left-14 md:top-10">
+        <div class="rounded-2xl bg-white px-4 py-2.5 shadow-lg">
+          <img src="img/logo.webp" alt="Doggis" class="h-8 w-auto md:h-10">
+        </div>
+      </div>
+
+      <div class="relative flex h-full flex-col justify-end px-6 pb-8 md:px-14 md:pb-14">
+        <h1 class="font-display text-[36px] leading-[1.05] text-white md:text-[56px]">
+          CENTRO DE<br class="hidden md:block"> OPERACIONES
+        </h1>
+        <p class="mt-3 max-w-sm text-[15px] text-white/85 md:text-[17px]">
+          Productos, sesiones y sucursales en un solo lugar.
+        </p>
+        <div class="mt-5 hidden flex-wrap gap-2 md:flex">
+          <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur">Inventario</span>
+          <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur">Sesiones seguras</span>
+          <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur">Multi-sucursal</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna derecha: interactiva -->
+    <div class="flex items-start justify-center bg-gradient-to-b from-white to-orange-50/60 px-6 pt-10 pb-12 md:items-center md:px-14 md:py-12">
+      <div class="w-full max-w-sm">
+
+        <!-- Estado 1: Login -->
+        <section id="estadoLogin" aria-labelledby="tituloLogin">
+          <img src="img/logo.webp" alt="Doggis" class="mb-6 h-12 w-auto">
+          <h2 id="tituloLogin" class="text-[26px] font-bold text-[var(--ink)]">Bienvenido de vuelta</h2>
+          <p class="mt-1 text-sm text-[var(--muted)]">Ingresa tus credenciales para continuar.</p>
+
+          <form id="formLogin" class="mt-7 space-y-5" novalidate>
+            <div>
+              <label for="usuario" class="block text-sm font-semibold text-[var(--ink)]">Nombre de usuario</label>
+              <input id="usuario" name="usuario" type="text" autocomplete="username" required
+                     placeholder="Ej: ana o ernesto"
+                     class="mt-2 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-[15px] text-[var(--ink)] placeholder:text-[var(--muted)] outline-none transition focus:border-[var(--brand-red)] focus:ring-4 focus:ring-[var(--brand-red)]/15">
+            </div>
+
+            <div>
+              <label for="clave" class="block text-sm font-semibold text-[var(--ink)]">Contraseña</label>
+              <div class="relative mt-2">
+                <input id="clave" name="clave" type="password" autocomplete="current-password" required
+                       placeholder="••••••••"
+                       class="w-full rounded-xl border border-gray-300 bg-white py-3 pl-4 pr-20 text-[15px] text-[var(--ink)] placeholder:text-[var(--muted)] outline-none transition focus:border-[var(--brand-red)] focus:ring-4 focus:ring-[var(--brand-red)]/15">
+                <button id="toggleClave" type="button"
+                        class="absolute inset-y-0 right-3 my-auto h-fit text-xs font-semibold text-[var(--muted)] hover:text-[var(--brand-red)] cursor-pointer">
+                  Mostrar
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-sm">
+              <label class="flex items-center gap-2 text-[var(--ink)]">
+                <input type="checkbox" checked
+                       class="size-4 rounded border-gray-300 accent-[var(--brand-red)]">
+                Mantener sesión
+              </label>
+              <a href="#" class="font-semibold text-[var(--brand-red)] hover:underline">Recuperar clave</a>
+            </div>
+
+            <button type="submit"
+                    class="w-full rounded-full bg-gradient-to-r from-[var(--brand-red)] to-[#f0603f] py-3 text-[15px] font-bold text-white shadow-lg shadow-red-200 transition hover:brightness-95 hover:-translate-y-0.5 active:scale-[.99] cursor-pointer">
+              Entrar al sistema
+            </button>
+          </form>
+
+          <p class="mt-8 flex items-start gap-2 text-xs leading-relaxed text-[var(--muted)]">
+            <svg class="mt-0.5 size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            Acceso restringido a personal autorizado. Sistema protegido por Cookies HttpOnly.
+          </p>
+        </section>
+
+        <!-- Estado 2: Panel del sistema (oculto por defecto) -->
+        <section id="estadoPanel" class="hidden" aria-labelledby="tituloPanel" tabindex="-1">
+          <img src="img/logo.webp" alt="Doggis" class="mb-6 h-12 w-auto">
+          <h2 id="tituloPanel" class="text-[26px] font-bold text-[var(--ink)]">
+            Hola, <span id="nombreUsuario">equipo</span> 👋
+          </h2>
+          <p class="mt-1 flex items-center gap-2 text-sm text-[var(--muted)]">
+            <span class="size-2 rounded-full bg-green-500"></span> Sesión iniciada correctamente.
+          </p>
+
+          <div class="mt-7 grid grid-cols-2 gap-3">
+            <button id="btnPerfil" type="button"
+                    class="rounded-xl border border-gray-300 bg-white py-3 text-sm font-semibold text-[var(--ink)] transition hover:border-[var(--brand-red)] hover:text-[var(--brand-red)] cursor-pointer">
+              Mi perfil
+            </button>
+            <button id="btnProductos" type="button"
+                    class="rounded-xl border border-gray-300 bg-white py-3 text-sm font-semibold text-[var(--ink)] transition hover:border-[var(--brand-red)] hover:text-[var(--brand-red)] cursor-pointer">
+              Ver productos
+            </button>
+          </div>
+
+          <button id="btnCerrarSesion" type="button"
+                  class="mt-3 w-full rounded-xl bg-[var(--ink)] py-3 text-sm font-semibold text-white transition hover:bg-black cursor-pointer">
+            Cerrar sesión
+          </button>
+
+          <p class="mt-7 mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">Respuesta de la API</p>
+          <pre id="resultadoApi" aria-live="polite"
+               class="max-h-48 overflow-auto rounded-xl bg-[var(--ink)] p-4 text-xs leading-relaxed text-green-300">Esperando acción...</pre>
+        </section>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Mostrar / ocultar contraseña
+    const inputClave = document.getElementById('clave');
+    const toggleClave = document.getElementById('toggleClave');
+    toggleClave.addEventListener('click', () => {
+      const oculto = inputClave.type === 'password';
+      inputClave.type = oculto ? 'text' : 'password';
+      toggleClave.textContent = oculto ? 'Ocultar' : 'Mostrar';
+    });
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

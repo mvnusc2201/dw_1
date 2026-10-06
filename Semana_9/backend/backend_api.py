@@ -24,21 +24,11 @@ if not INTERNAL_GATEWAY_SECRET:
 
 
 PRODUCTS = [
-    {
-        "id": 1,
-        "name": "Notebook",
-        "price": 900000
-    },
-    {
-        "id": 2,
-        "name": "Monitor",
-        "price": 250000
-    },
-    {
-        "id": 3,
-        "name": "Teclado",
-        "price": 45000
-    }
+    {"id": 1, "name": "Completo Italiano", "price": 3200},
+    {"id": 2, "name": "Completo Dinamico", "price": 3500},
+    {"id": 3, "name": "Completo Mexicano", "price": 3800},
+    {"id": 4, "name": "Papas Fritas", "price": 2500},
+    {"id": 5, "name": "Bebida 350 ml", "price": 1500},
 ]
 
 

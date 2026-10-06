@@ -5,7 +5,7 @@ import httpx
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request, Response
 from pydantic import BaseModel
-
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
@@ -14,6 +14,16 @@ app = FastAPI(
     description="Gateway con login, sesion, introspection, Vault y autorizacion"
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 VAULT_ADDR = os.getenv(
     "VAULT_ADDR",

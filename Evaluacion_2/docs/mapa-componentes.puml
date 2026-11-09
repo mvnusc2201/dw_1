@@ -1,0 +1,63 @@
+@startuml
+title Doggy's - Mapa de componentes
+
+skinparam componentStyle rectangle
+
+
+actor Cliente
+
+component "Frontend\nDoggy's" as Frontend
+component "API Gateway" as Gateway
+component "Auth Service" as Auth
+component "HashiCorp Vault" as Vault
+
+component "GraphQL Gateway\nPrivado" as GraphQL
+
+component "Clients Service\n:9101" as Clients
+component "Inventory Service\n:9102" as Inventory
+component "Orders Service\n:9103" as Orders
+component "Payments Service\n:9104" as Payments
+
+database "MongoDB" as Mongo
+
+
+Cliente --> Frontend
+
+Frontend --> Gateway : HTTPS / REST / GraphQL
+
+Gateway --> Auth : autenticación
+Gateway --> Vault : secretos
+
+Gateway --> Clients : REST
+Gateway --> Inventory : REST
+Gateway --> Orders : REST
+Gateway --> Payments : REST
+
+Gateway --> GraphQL : consulta agregada
+
+GraphQL --> Orders : REST
+GraphQL --> Inventory : REST
+
+Orders --> Inventory : validar producto,\nstock y precio
+
+Payments --> Orders : consultar pedido\nactualizar estado
+
+Clients --> Mongo
+Inventory --> Mongo
+Orders --> Mongo
+Payments --> Mongo
+
+
+note right of GraphQL
+Servicio privado.
+No posee autoridad
+sobre datos de negocio.
+end note
+
+note bottom of Gateway
+Único punto de entrada
+público hacia los
+servicios internos.
+end note
+
+@enduml

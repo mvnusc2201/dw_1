@@ -1,0 +1,145 @@
+@startuml
+title Doggy's - UML API Gateway y Politicas de Seguridad
+
+skinparam classAttributeIconSize 0
+
+
+class ApiGateway {
+  +routeRequest()
+  +authenticate()
+  +authorize()
+  +propagateIdentity()
+}
+
+
+class RouteDefinition {
+  +path: string
+  +method: string
+  +targetService: string
+  +requiresAuth: boolean
+}
+
+
+class AuthenticationPolicy {
+  +validateSession()
+  +introspectToken()
+}
+
+
+class AuthorizationPolicy {
+  +validateRole()
+  +validateOwnership()
+  +validateOperation()
+}
+
+
+class SecretProvider {
+  +getSecret(reference)
+  +rotateSecret(reference)
+}
+
+
+class AuthService {
+  +login()
+  +introspect()
+  +logout()
+}
+
+
+class GraphQLGateway {
+  +resumenPedido(pedidoId)
+}
+
+
+class InventoryService {
+  +getProducts()
+  +getProduct(id)
+}
+
+
+class OrdersService {
+  +getOrders()
+  +getOrder(id)
+  +createOrder()
+}
+
+
+class ClientsService {
+  +getClient(id)
+  +updateClient(id)
+}
+
+
+class PaymentsService {
+  +createPayment()
+  +confirmPayment(id)
+}
+
+
+class VerifiedIdentity {
+  +userId: string
+  +username: string
+  +roles: list
+}
+
+
+ApiGateway "1" *-- "1..*" RouteDefinition
+
+ApiGateway "1" --> "1" AuthenticationPolicy
+ApiGateway "1" --> "1" AuthorizationPolicy
+
+ApiGateway ..> SecretProvider : obtiene secretos
+ApiGateway ..> AuthService : login / introspection / logout
+
+AuthenticationPolicy ..> AuthService
+AuthorizationPolicy ..> VerifiedIdentity
+
+ApiGateway ..> InventoryService
+ApiGateway ..> OrdersService
+ApiGateway ..> ClientsService
+ApiGateway ..> PaymentsService
+ApiGateway ..> GraphQLGateway
+
+
+GraphQLGateway ..> OrdersService
+GraphQLGateway ..> InventoryService
+
+
+note right of ApiGateway
+Punto de entrada externo.
+
+Valida sesion,
+aplica autorizacion,
+limita rutas y propaga
+identidad verificada.
+end note
+
+
+note right of SecretProvider
+Representa HashiCorp Vault
+u otro gestor de secretos.
+
+Nunca expone secretos
+al navegador.
+end note
+
+
+note right of GraphQLGateway
+Servicio privado.
+
+Agrega informacion de
+orders + inventory.
+end note
+
+
+note bottom of AuthorizationPolicy
+La autorizacion considera:
+
+- rol
+- recurso
+- propiedad
+- operacion
+end note
+
+
+@enduml

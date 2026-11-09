@@ -1,0 +1,111 @@
+@startuml
+title Doggy's - UML del Dominio y Servicios
+
+skinparam classAttributeIconSize 0
+
+
+class Cliente {
+  +id: ObjectId
+  +nombre: string
+  +email: string
+  +telefono: string
+  +direccion: string
+}
+
+
+class Producto {
+  +id: ObjectId
+  +nombre: string
+  +descripcion: string
+  +precio: int
+  +stock: int
+  +disponible: boolean
+}
+
+
+class Pedido {
+  +id: ObjectId
+  +cliente_id: ObjectId
+  +producto_id: ObjectId
+  +cantidad: int
+  +estado: string
+  +total: int
+}
+
+
+class Pago {
+  +id: ObjectId
+  +pedido_id: ObjectId
+  +monto: int
+  +estado: string
+  +proveedor: string
+}
+
+
+interface ClientsService <<service>> {
+  +obtenerClientes()
+  +obtenerCliente(id)
+  +crearCliente()
+  +actualizarCliente(id)
+  +eliminarCliente(id)
+}
+
+
+interface InventoryService <<service>> {
+  +obtenerProductos()
+  +obtenerProducto(id)
+  +crearProducto()
+  +actualizarProducto(id)
+  +eliminarProducto(id)
+}
+
+
+interface OrdersService <<service>> {
+  +obtenerPedidos()
+  +obtenerPedido(id)
+  +crearPedido()
+  +actualizarEstado(id)
+}
+
+
+interface PaymentsService <<service>> {
+  +obtenerPagos()
+  +obtenerPago(id)
+  +crearPago()
+  +confirmarPago(id)
+}
+
+
+Cliente "1" -- "0..*" Pedido : realiza >
+
+Producto "1" -- "0..*" Pedido : incluido en >
+
+Pedido "1" -- "0..*" Pago : genera >
+
+
+ClientsService ..> Cliente
+
+InventoryService ..> Producto
+
+OrdersService ..> Pedido
+OrdersService ..> Producto : consulta stock
+
+PaymentsService ..> Pago
+PaymentsService ..> Pedido : consulta / actualiza
+
+
+note right of Pedido
+Cada pedido pertenece a un cliente
+y actualmente referencia un producto.
+El total se calcula en el servidor.
+end note
+
+
+note right of Pago
+Un pedido puede tener uno o más
+intentos de pago registrados.
+El frontend no decide si está pagado.
+end note
+
+
+@enduml

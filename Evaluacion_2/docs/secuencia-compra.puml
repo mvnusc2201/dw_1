@@ -1,0 +1,59 @@
+@startuml
+title Doggy's - Secuencia de creación y pago de pedido
+
+actor Cliente
+participant Frontend
+participant "API Gateway" as Gateway
+participant "Orders Service" as Orders
+participant "Inventory Service" as Inventory
+participant "Payments Service" as Payments
+database MongoDB
+
+
+Cliente -> Frontend : Crear pedido
+Frontend -> Gateway : POST /orders
+Gateway -> Orders : solicitud validada
+
+Orders -> Inventory : GET /productos/{id}
+Inventory -> MongoDB : consultar producto
+MongoDB --> Inventory : producto
+Inventory --> Orders : precio, stock, disponibilidad
+
+alt producto disponible y stock suficiente
+    Orders -> Orders : calcular total
+    Orders -> MongoDB : guardar pedido
+    MongoDB --> Orders : pedido creado
+    Orders --> Gateway : 200 / pedido
+    Gateway --> Frontend : pedido creado
+else stock insuficiente
+    Orders --> Gateway : 409 Conflict
+    Gateway --> Frontend : stock insuficiente
+end
+
+
+Cliente -> Frontend : Iniciar pago
+Frontend -> Gateway : POST /payments
+Gateway -> Payments : solicitud validada
+
+Payments -> Orders : GET /pedidos/{id}
+Orders --> Payments : total oficial
+
+Payments -> MongoDB : crear pago pendiente
+MongoDB --> Payments : pago
+
+Payments --> Gateway : pago creado
+Gateway --> Frontend : pago pendiente
+
+
+Cliente -> Frontend : Confirmar pago
+Frontend -> Gateway : PUT /payments/{id}/confirmar
+Gateway -> Payments : solicitud autorizada
+
+Payments -> MongoDB : estado = pagado
+Payments -> Orders : PUT /pedidos/{id}/estado
+Orders -> MongoDB : estado = pagado
+
+Payments --> Gateway : pago confirmado
+Gateway --> Frontend : 200 OK
+
+@enduml

@@ -7,6 +7,19 @@ const cerrarCarrito = document.getElementById("cerrarCarrito");
 const carritoPanel = document.getElementById("carritoPanel");
 const contenidoCarrito = document.getElementById("contenidoCarrito");
 
+const fondoCarrito = document.getElementById("fondoCarrito");
+
+function cambiarEstadoCarrito(abierto) {
+    if (!carritoPanel) return;
+    const abiertoNormalizado = Boolean(abierto);
+    carritoPanel.classList.toggle("abierto", abiertoNormalizado);
+    carritoPanel.setAttribute("aria-hidden", String(!abiertoNormalizado));
+    document.body.classList.toggle("carrito-visible", abiertoNormalizado);
+    if (btnCarrito) btnCarrito.setAttribute("aria-expanded", String(abiertoNormalizado));
+    if (!abiertoNormalizado && btnCarrito) btnCarrito.focus({ preventScroll: true });
+}
+
+
 // ==========================================
 // CARRITO DE COMPRAS
 // ==========================================
@@ -24,13 +37,22 @@ function actualizarContador() {
     contadorCarrito.textContent = carrito.length;
 }
 
+function formatoCLP(valor) {
+    return "$" + Number(valor).toLocaleString("es-CL");
+}
+
+function escaparHTML(valor) {
+    return String(valor).replace(/[&<>"']/g, (c) => (
+        { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+    ));
+}
+
 function mostrarCarrito() {
     if (!contenidoCarrito) return;
 
     if (carrito.length === 0) {
-        contenidoCarrito.innerHTML = `
-            <p>Tu carrito está vacío.</p>
-        `;
+        // Vacío: el HTML muestra "Tu carrito está vacío" mientras este contenedor no tenga hijos.
+        contenidoCarrito.innerHTML = "";
         return;
     }
 
@@ -41,49 +63,43 @@ function mostrarCarrito() {
         total += producto.precio;
 
         html += `
-            <div class="item-carrito">
-                <div>
-                    <strong>
-                        ${producto.nombre}
-                    </strong>
-
-                    <p>
-                        $${producto.precio.toLocaleString("es-CL")}
-                    </p>
+            <div class="flex items-center justify-between gap-3 border-b border-gray-100 py-3">
+                <div class="min-w-0">
+                    <strong class="block text-[15px] text-[var(--ink)]">${escaparHTML(producto.nombre)}</strong>
+                    <p class="font-bold text-[var(--doggis-red)]">${formatoCLP(producto.precio)}</p>
                 </div>
-
                 <button
-                    class="btn-eliminar"
+                    type="button"
+                    class="btn-eliminar cursor-pointer rounded-full px-2 py-1 text-lg font-bold text-gray-400 hover:text-[var(--doggis-red)]"
                     onclick="eliminarProducto(${indice})"
-                    aria-label="Eliminar producto"
-                >
-                    <i class="fa-solid fa-trash"></i>
-                </button>
+                    aria-label="Eliminar ${escaparHTML(producto.nombre)}"
+                >✕</button>
             </div>
         `;
     });
 
     html += `
-        <div class="total-carrito">
-            <strong>Total:</strong>
-            <strong>
-                $${total.toLocaleString("es-CL")}
-            </strong>
+        <div class="total-carrito mt-5 flex items-center justify-between border-t-2 border-[var(--doggis-yellow)] pt-4">
+            <strong class="text-xl">Total:</strong>
+            <strong class="text-xl text-[var(--doggis-red)]">${formatoCLP(total)}</strong>
         </div>
-    `;
-
-    // Botón para crear el pedido real.
-    html += `
         <button
             type="button"
             id="btnConfirmarPedidoReal"
-            class="w-full mt-6 bg-red-600 text-white py-3 rounded-full font-bold cursor-pointer"
+            class="mt-6 w-full cursor-pointer rounded-full bg-[var(--doggis-red)] py-3 font-bold text-white shadow-md transition hover:brightness-90 disabled:cursor-wait disabled:opacity-60"
         >
-            Confirmar pedido
+            Pagar (simulado)
         </button>
     `;
 
     contenidoCarrito.innerHTML = html;
+}
+
+function mostrarEstadoPedido(texto, tipo) {
+    const estado = document.getElementById("estadoPedido");
+    if (!estado) return;
+    estado.textContent = texto;
+    estado.className = "estado-pedido" + (tipo ? " " + tipo : "");
 }
 
 function agregarProducto(nombre, precio) {
@@ -96,9 +112,9 @@ function agregarProducto(nombre, precio) {
     actualizarContador();
     mostrarCarrito();
 
-    if (carritoPanel) {
-        carritoPanel.classList.add("abierto");
-    }
+    mostrarEstadoPedido("");
+
+    cambiarEstadoCarrito(true);
 }
 
 function eliminarProducto(indice) {
@@ -135,19 +151,17 @@ botonesAgregar.forEach((boton) => {
 
 if (btnCarrito) {
     btnCarrito.addEventListener("click", () => {
-        if (!carritoPanel) return;
-
-        carritoPanel.classList.add("abierto");
+        cambiarEstadoCarrito(true);
         mostrarCarrito();
     });
 }
 
 if (cerrarCarrito) {
-    cerrarCarrito.addEventListener("click", () => {
-        if (carritoPanel) {
-            carritoPanel.classList.remove("abierto");
-        }
-    });
+    cerrarCarrito.addEventListener("click", () => cambiarEstadoCarrito(false));
+}
+
+if (fondoCarrito) {
+    fondoCarrito.addEventListener("click", () => cambiarEstadoCarrito(false));
 }
 
 // ==========================================
@@ -273,6 +287,13 @@ if (formLogin) {
             formLogin.reset();
 
             await actualizarEstadoSesion();
+            actualizarCabeceraSesion();
+
+            // Si vino desde el carrito, regresar sin perder sus productos.
+            const volver = new URLSearchParams(window.location.search).get("volver");
+            if (volver === "/productos.html" || volver === "/index.html") {
+                window.location.assign(volver);
+            }
 
         } catch (error) {
             mensajeLogin.textContent = error.message;
@@ -358,6 +379,8 @@ if (btnCerrarSesion) {
 
             mensajeLogin.textContent =
                 "Sesión cerrada correctamente.";
+
+            actualizarCabeceraSesion();
 
             mensajeLogin.className = "mensaje-login exito";
 
@@ -559,171 +582,156 @@ function normalizarNombreDoggys(valor) {
 // ==========================================
 
 async function confirmarPedidoRealDoggys() {
-    if (procesandoPedidoDoggys || carrito.length === 0) {
-        return;
-    }
+    if (procesandoPedidoDoggys || carrito.length === 0) return;
 
     procesandoPedidoDoggys = true;
-
-    const boton = contenidoCarrito?.querySelector(
-        "#btnConfirmarPedidoReal"
-    );
-
+    const boton = contenidoCarrito?.querySelector("#btnConfirmarPedidoReal");
     if (boton) {
         boton.disabled = true;
-        boton.textContent = "Registrando pedido...";
+        boton.textContent = "Procesando pedido...";
     }
 
     let pedidosCreados = 0;
+    let pagosPendientes = 0;
+    const comprobantes = [];
 
     try {
-        // 1. Verificar sesión del cliente.
+        // Una misma sesión permite comprar desde inicio o desde productos.
         const sesion = await fetch("/auth/me", {
-            method: "GET",
             credentials: "same-origin",
             cache: "no-store"
         });
 
-        if (!sesion.ok) {
-            throw new Error(
-                "Debes iniciar sesión en cuenta.html antes de confirmar el pedido."
+        if (sesion.status === 401) {
+            mostrarEstadoPedido("Inicia sesión para continuar. El carrito se conserva.", "error");
+            const destino = window.location.pathname.endsWith("/productos.html")
+                ? "/productos.html"
+                : "/index.html";
+            window.location.assign(
+                "/cuenta.html?volver=" + encodeURIComponent(destino)
             );
+            return;
         }
+        if (!sesion.ok) throw new Error("No se pudo verificar tu sesión.");
 
-        // 2. Consultar catálogo real.
-        const respuestaCatalogo = await fetch(
-            "/api/v1/products",
-            {
-                credentials: "same-origin",
-                cache: "no-store"
-            }
-        );
-
+        const respuestaCatalogo = await fetch("/api/v1/products", {
+            credentials: "same-origin",
+            cache: "no-store"
+        });
         if (!respuestaCatalogo.ok) {
-            throw new Error(
-                "No se pudo consultar el catálogo de productos."
-            );
+            throw new Error("No se pudo consultar el catálogo de Inventory.");
+        }
+        const datos = await respuestaCatalogo.json();
+        if (!Array.isArray(datos.products)) {
+            throw new Error("El catálogo tiene un formato inválido.");
         }
 
-        const datosCatalogo = await respuestaCatalogo.json();
-        const catalogo = datosCatalogo.products;
-
-        if (!Array.isArray(catalogo)) {
-            throw new Error(
-                "El catálogo tiene un formato inválido."
-            );
-        }
-
-        // 3. Validar y agrupar productos.
+        // Validar TODO el carrito antes de crear pedidos.
+        const porNombre = new Map(
+            datos.products.map(p => [normalizarNombreDoggys(p.name), p])
+        );
         const grupos = new Map();
 
         for (const item of carrito) {
-            const producto = catalogo.find((p) =>
-                normalizarNombreDoggys(p.name) ===
-                normalizarNombreDoggys(item.nombre)
-            );
-
+            const producto = porNombre.get(normalizarNombreDoggys(item.nombre));
             if (!producto || !producto.available) {
-                throw new Error(
-                    `Producto no disponible: ${item.nombre}`
-                );
+                throw new Error(`Producto no disponible: ${item.nombre}`);
             }
-
-            if (
-                typeof producto.id !== "string" ||
-                !/^[a-f0-9]{24}$/i.test(producto.id)
-            ) {
-                throw new Error(
-                    `ID inválido para ${producto.name}.`
-                );
+            if (!/^[a-f0-9]{24}$/i.test(String(producto.id || ""))) {
+                throw new Error(`ID inválido para ${producto.name}`);
             }
-
-            // Evitar enviar pedidos con precios desactualizados.
-            if (
-                Number(item.precio) !==
-                Number(producto.price_clp)
-            ) {
-                throw new Error(
-                    `El precio de ${producto.name} cambió. Actualiza el carrito antes de comprar.`
-                );
+            if (Number(item.precio) !== Number(producto.price_clp)) {
+                throw new Error(`Cambió el precio de ${producto.name}. Actualiza el carrito.`);
             }
-
             const grupo = grupos.get(producto.id) || {
                 id: producto.id,
                 nombre: producto.name,
                 cantidad: 0
             };
-
             grupo.cantidad++;
-
             if (grupo.cantidad > 50) {
-                throw new Error(
-                    `Cantidad máxima superada: ${producto.name}`
-                );
+                throw new Error(`Cantidad máxima superada: ${producto.name}`);
             }
-
             grupos.set(producto.id, grupo);
         }
 
-        // 4. Crear pedidos reales mediante API Gateway.
+        // Contrato real: cada producto distinto crea su propio pedido y pago.
         for (const grupo of grupos.values()) {
-            const respuestaPedido = await fetch(
-                "/api/v1/orders",
-                {
-                    method: "POST",
-                    credentials: "same-origin",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        producto_id: grupo.id,
-                        cantidad: grupo.cantidad
-                    })
-                }
-            );
+            const respuestaPedido = await fetch("/api/v1/orders", {
+                method: "POST",
+                credentials: "same-origin",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    producto_id: grupo.id,
+                    cantidad: grupo.cantidad
+                })
+            });
 
             if (!respuestaPedido.ok) {
-                const datosError = await respuestaPedido
-                    .json()
-                    .catch(() => ({}));
-
+                const error = await respuestaPedido.json().catch(() => ({}));
                 throw new Error(
-                    typeof datosError.detail === "string"
-                        ? datosError.detail
+                    typeof error.detail === "string"
+                        ? error.detail
                         : `No se pudo crear el pedido (HTTP ${respuestaPedido.status}).`
                 );
             }
 
+            const datosPedido = await respuestaPedido.json();
+            const pedido = datosPedido.created;
+            if (!pedido || !/^[a-f0-9]{24}$/i.test(String(pedido.id || ""))) {
+                throw new Error("La respuesta del pedido es inválida. Revisa tus pedidos antes de reintentar.");
+            }
             pedidosCreados++;
 
-            // Eliminar artículos confirmados.
-            carrito = carrito.filter((item) =>
+            // El pedido YA se guardó: retirar del carrito para evitar duplicarlo.
+            carrito = carrito.filter(item =>
                 normalizarNombreDoggys(item.nombre) !==
                 normalizarNombreDoggys(grupo.nombre)
             );
-
             guardarCarrito();
             actualizarContador();
+
+            // Crear el registro de PAGO PENDIENTE en MongoDB, no un cobro bancario.
+            const respuestaPago = await fetch("/api/v1/payments", {
+                method: "POST",
+                credentials: "same-origin",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ pedido_id: pedido.id })
+            });
+            if (!respuestaPago.ok) {
+                const error = await respuestaPago.json().catch(() => ({}));
+                const detalle = typeof error.detail === "string"
+                    ? error.detail : `HTTP ${respuestaPago.status}`;
+                throw new Error(
+                    `Pedido ${pedido.id} guardado, pero no se pudo crear el pago pendiente: ${detalle}. No repitas el pedido.`
+                );
+            }
+
+            const datosPago = await respuestaPago.json();
+            const pago = datosPago.payment;
+            if (!pago || pago.pedido_id !== pedido.id || pago.estado !== "pendiente") {
+                throw new Error(
+                    `Pedido ${pedido.id} creado, pero no se pudo validar el pago. Revisa MongoDB antes de reintentar.`
+                );
+            }
+            pagosPendientes++;
+            comprobantes.push(
+                `${grupo.nombre} (${grupo.cantidad}): pedido ${pedido.id}, pago ${pago.id} — ${formatoCLP(pago.monto)} pendiente`
+            );
         }
 
-        alert(
-            `${pedidosCreados} pedido(s) registrado(s) correctamente. Pago pendiente.`
+        mostrarEstadoPedido(
+            `Pedido registrado correctamente. ${pagosPendientes} pago(s) pendiente(s) en MongoDB; no se ha cobrado dinero.\n` +
+            comprobantes.join("\n"),
+            "exito"
         );
-
     } catch (error) {
-        const parcial = pedidosCreados > 0
-            ? `\nPedidos ya registrados: ${pedidosCreados}.`
-            : "";
-
-        alert(
-            `${error.message}${parcial}\nAntes de reintentar, revisa tus pedidos si hubo un error de conexión.`
+        mostrarEstadoPedido(
+            `${error.message} Pedidos creados: ${pedidosCreados}; pagos pendientes registrados: ${pagosPendientes}. ` +
+            "Si hubo un error de conexión, revisa tus pedidos antes de intentar nuevamente.",
+            "error"
         );
-
-        console.error(
-            "Error al confirmar pedido Doggy's:",
-            error
-        );
-
+        console.error("Error al registrar el pago pendiente:", error);
     } finally {
         procesandoPedidoDoggys = false;
         mostrarCarrito();
@@ -748,3 +756,145 @@ if (contenidoCarrito) {
         }
     });
 }
+
+// ==========================================
+// CABECERA: ESTADO DE SESIÓN (todas las páginas)
+// ==========================================
+
+async function actualizarCabeceraSesion() {
+    const texto = document.getElementById("textoCuenta");
+    if (!texto) return;
+
+    try {
+        const respuesta = await fetch("/auth/me", {
+            method: "GET",
+            credentials: "same-origin",
+            cache: "no-store"
+        });
+
+        texto.textContent = respuesta.ok ? "Mi cuenta" : "Login";
+    } catch (error) {
+        texto.textContent = "Login";
+    }
+}
+
+// ==========================================
+// CATÁLOGO REAL: precios y disponibilidad desde el Gateway
+// ==========================================
+
+function marcarNoDisponible(boton, texto) {
+    boton.disabled = true;
+    boton.textContent = texto;
+    boton.classList.add("opacity-50", "cursor-not-allowed");
+}
+
+async function sincronizarCatalogo() {
+    const botones = document.querySelectorAll(".btn-agregar");
+    if (botones.length === 0) return;
+
+    const aviso = document.getElementById("avisoCatalogo");
+
+    try {
+        const respuesta = await fetch("/api/v1/products", {
+            credentials: "same-origin",
+            cache: "no-store"
+        });
+
+        if (!respuesta.ok) throw new Error("Catálogo no disponible");
+
+        const datos = await respuesta.json();
+        if (!Array.isArray(datos.products)) throw new Error("Formato inválido");
+
+        const porNombre = new Map(
+            datos.products.map((p) => [normalizarNombreDoggys(p.name), p])
+        );
+
+        botones.forEach((boton) => {
+            const producto = porNombre.get(
+                normalizarNombreDoggys(boton.dataset.nombre)
+            );
+
+            // Lo que no existe en Inventory no se puede pedir.
+            if (!producto) return marcarNoDisponible(boton, "No disponible");
+            if (!producto.available) return marcarNoDisponible(boton, "Agotado");
+
+            const precio = Number(producto.price_clp);
+            if (!Number.isFinite(precio) || precio < 0) return;
+
+            boton.dataset.precio = String(precio);
+            const etiqueta = boton
+                .closest("[data-producto]")
+                ?.querySelector(".js-precio");
+            if (etiqueta) etiqueta.textContent = formatoCLP(precio);
+        });
+
+        if (aviso) aviso.hidden = true;
+    } catch (error) {
+        // Se mantiene el catálogo estático; el pedido se valida igualmente al confirmar.
+        if (aviso) aviso.hidden = false;
+    }
+}
+
+// ==========================================
+// MENÚ HAMBURGUESA, ESCAPE Y BUSCADOR INFORMATIVO
+// ==========================================
+
+(function inicializarInterfaz() {
+    const btnMenu = document.getElementById("btnMenu");
+    const menu = document.getElementById("menuPrincipal");
+
+    function abrirMenu(abierto) {
+        if (!btnMenu || !menu) return;
+        menu.setAttribute("data-open", abierto ? "true" : "false");
+        btnMenu.setAttribute("aria-expanded", abierto ? "true" : "false");
+    }
+
+    const menuAbierto = () => menu && menu.getAttribute("data-open") === "true";
+
+    if (btnMenu && menu) {
+        btnMenu.addEventListener("click", (e) => {
+            e.stopPropagation();
+            abrirMenu(!menuAbierto());
+        });
+
+        menu.addEventListener("click", (e) => {
+            if (e.target.closest("a")) abrirMenu(false);
+        });
+
+        document.addEventListener("click", (e) => {
+            if (menuAbierto() && !menu.contains(e.target) && !btnMenu.contains(e.target)) {
+                abrirMenu(false);
+            }
+        });
+    }
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+
+        if (menuAbierto()) {
+            abrirMenu(false);
+            btnMenu.focus();
+        }
+
+        if (carritoPanel && carritoPanel.classList.contains("abierto")) {
+            cambiarEstadoCarrito(false);
+        }
+    });
+
+    // Buscador de tiendas: solo informativo, no existe un servicio de tiendas.
+    const formTiendas = document.getElementById("formTiendas");
+    const mensajeTiendas = document.getElementById("mensajeTiendas");
+
+    if (formTiendas) {
+        formTiendas.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (mensajeTiendas) {
+                mensajeTiendas.textContent =
+                    "El buscador de tiendas aún no está disponible. Puedes hacer tu pedido desde esta web.";
+            }
+        });
+    }
+})();
+
+actualizarCabeceraSesion();
+sincronizarCatalogo();

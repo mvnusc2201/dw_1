@@ -1,500 +1,219 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi cuenta - Doggy's</title>
 
-    <title>Mi cuenta - Doggy's</title>
-
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-    <style>
-        :root {
-            --navy: #1d2947;
-            --red: #ed3445;
-            --green: #159f90;
-            --background: #f7f8fa;
-            --muted: #8493af;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            color: var(--navy);
-            background: var(--background);
-        }
-
-        .header {
-            background: #fff;
-            border-bottom: 1px solid var(--red);
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 45px;
-        }
-
-        .logo {
-            font-size: 36px;
-            font-weight: 900;
-            letter-spacing: 3px;
-            text-decoration: none;
-            color: var(--navy);
-        }
-
-        .header-links {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .header-links a {
-            color: var(--navy);
-            text-decoration: none;
-            font-size: 24px;
-        }
-
-        .main {
-            min-height: calc(100vh - 160px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 60px 20px;
-        }
-
-        .cuenta-card {
-            width: 100%;
-            max-width: 590px;
-            background: #fff;
-            padding: 48px;
-            border-radius: 22px;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
-        }
-
-        .subtitulo {
-            font-size: 25px;
-            color: var(--green);
-            font-weight: 800;
-            margin-bottom: 12px;
-        }
-
-        h1 {
-            margin: 0 0 14px;
-            font-size: 38px;
-            color: var(--navy);
-        }
-
-        .descripcion {
-            color: var(--muted);
-            font-size: 17px;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        .campo {
-            margin-bottom: 20px;
-        }
-
-        .campo label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 15px;
-        }
-
-        .campo input {
-            width: 100%;
-            padding: 15px;
-            border: 1px solid #d9dfeb;
-            border-radius: 10px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .campo input:focus {
-            border-color: var(--green);
-        }
-
-        .btn-principal {
-            width: 100%;
-            border: 0;
-            border-radius: 10px;
-            background: var(--red);
-            color: #fff;
-            padding: 16px;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .btn-principal:hover {
-            background: #ce2739;
-        }
-
-        .btn-principal:disabled {
-            opacity: 0.65;
-            cursor: not-allowed;
-        }
-
-        .btn-secundario {
-            width: 100%;
-            margin-top: 14px;
-            padding: 14px;
-            background: #fff;
-            border: 1px solid var(--red);
-            color: var(--red);
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .btn-secundario:hover {
-            background: #fff3f4;
-        }
-
-        .mensaje-login {
-            margin: 20px 0;
-            text-align: center;
-            font-weight: 600;
-            line-height: 1.5;
-            overflow-wrap: anywhere;
-        }
-
-        .mensaje-login.error {
-            color: #dc2638;
-        }
-
-        .mensaje-login.exito {
-            color: var(--green);
-        }
-
-        .terminos {
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-            font-size: 14px;
-            margin: 22px 0;
-            line-height: 1.5;
-        }
-
-        .terminos input {
-            margin-top: 4px;
-        }
-
-        .navegacion {
-            margin-top: 28px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .navegacion a {
-            text-decoration: none;
-            color: var(--navy);
-            font-size: 16px;
-        }
-
-        .navegacion a:hover {
-            color: var(--red);
-        }
-
-        .link-pedidos {
-            font-weight: bold;
-            color: var(--red) !important;
-        }
-
-        #registroPanel {
-            display: none;
-        }
-
-        #btnCerrarSesion {
-            display: none;
-        }
-
-        .footer {
-            background: #fff;
-            border-top: 1px solid var(--red);
-            text-align: center;
-            padding: 26px 16px;
-            color: var(--navy);
-            font-size: 14px;
-        }
-
-        @media (max-width: 600px) {
-            .header {
-                height: 70px;
-                padding: 0 20px;
-            }
-
-            .logo {
-                font-size: 27px;
-            }
-
-            .main {
-                padding: 35px 15px;
-            }
-
-            .cuenta-card {
-                padding: 30px 22px;
-            }
-
-            h1 {
-                font-size: 30px;
-            }
-
-            .subtitulo {
-                font-size: 21px;
-            }
-        }
-    </style>
+  <!-- Tipografías: Anton (títulos) y Poppins (texto) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind compilado localmente: no depende de un CDN -->
+  <link rel="stylesheet" href="css/tailwind.css?v=7">
+  <link rel="stylesheet" href="css/style.css?v=7">
 </head>
-
 <body>
+  <!-- Promo strip -->
+  <div class="w-full bg-white text-center px-4 py-2">
+    <p class="text-[13px] font-semibold text-[var(--ink)]">
+      Pide y retira en tiendas con 20% dcto. Canjea el cupón:
+      <span class="text-[var(--doggis-red)]">RETIRA con 20% OFF</span>
+    </p>
+  </div>
 
-    <!-- ENCABEZADO -->
-    <header class="header">
-        <a href="/index.html" class="logo">
-            DOGGY'S
+  <!-- Header -->
+  <header class="w-full bg-[var(--doggis-yellow)] shadow-sm sticky top-0 z-50">
+    <div class="mx-auto max-w-[1440px] px-6 h-[58px] grid grid-cols-[1fr_auto_1fr] items-center">
+      <!-- Izquierda: menú y carrito -->
+      <div class="flex items-center gap-4 justify-self-start">
+        <div class="relative">
+          <button id="btnMenu" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menuPrincipal" class="w-8 h-8 rounded-md bg-white/85 hover:bg-white aria-expanded:bg-white aria-expanded:ring-1 aria-expanded:ring-black/10 transition-colors flex items-center justify-center shadow-sm cursor-pointer">
+            <svg fill="none" height="18" stroke="var(--doggis-red)" stroke-linecap="round" stroke-width="2.4" viewBox="0 0 24 24" width="18">
+              <path d="M4 7h16M4 12h16M4 17h16"></path>
+            </svg>
+          </button>
+
+          <!-- Menú desplegable -->
+          <nav id="menuPrincipal" aria-label="Menú principal" data-open="false" class="absolute left-0 top-full z-10 mt-2 w-48 overflow-hidden rounded-lg border border-black/5 bg-white shadow-[0_8px_24px_rgba(0,0,0,.15)] invisible opacity-0 -translate-y-1 transition-[opacity,transform,visibility] duration-150 data-[open=true]:visible data-[open=true]:opacity-100 data-[open=true]:translate-y-0">
+            <p class="px-5 py-3 text-[17px] font-semibold text-[var(--ink)]">Doggis</p>
+            <ul class="border-t border-gray-200 py-2 text-[15px]">
+              <li><a href="productos.html" class="block px-5 py-2 text-[var(--muted)] hover:bg-gray-50 hover:text-[var(--ink)] transition-colors">Pedir aquí</a></li>
+              <li><a href="index.html#promos" class="block px-5 py-2 text-[var(--muted)] hover:bg-gray-50 hover:text-[var(--ink)] transition-colors">Promos del mes</a></li>
+              <li><a href="index.html#tiendas" class="block px-5 py-2 text-[var(--muted)] hover:bg-gray-50 hover:text-[var(--ink)] transition-colors">Locales</a></li>
+              <li><a href="index.html#club" class="block px-5 py-2 text-[var(--muted)] hover:bg-gray-50 hover:text-[var(--ink)] transition-colors">Descarga la APP</a></li>
+              <li><a href="/cuenta.html" class="block px-5 py-2 text-[var(--muted)] hover:bg-gray-50 hover:text-[var(--ink)] transition-colors">Mi cuenta</a></li>
+            </ul>
+          </nav>
+        </div>
+        <button id="btnCarrito" type="button" aria-label="Carrito" aria-expanded="false" aria-controls="carritoPanel" class="relative w-8 h-8 flex items-center justify-center hover:scale-110 transition-transform cursor-pointer">
+          <svg fill="none" height="20" stroke="var(--ink)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="20">
+            <path d="M6 2 4 6v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6l-2-4z"></path>
+            <path d="M4 6h16"></path>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span id="contadorCarrito" class="absolute -top-1 -right-2 min-w-[18px] h-[18px] px-1 rounded-full bg-[var(--doggis-red)] text-white text-[10px] font-bold leading-none flex items-center justify-center">0</span>
+        </button>
+      </div>
+
+      <!-- Centro: logo -->
+      <a class="shrink-0" href="index.html">
+        <img src="img/logo.webp" alt="Logo Doggis" class="h-[30px] w-auto">
+      </a>
+
+      <!-- Derecha: login y bandera -->
+      <div class="flex items-center gap-6 justify-self-end">
+        <a id="enlaceCuenta" href="/cuenta.html" aria-label="Login o mi cuenta" class="flex items-center gap-2 text-sm font-semibold hover:text-[var(--doggis-red)] transition-colors cursor-pointer">
+          <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="20">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+            <path d="M10 17l5-5-5-5"></path>
+            <path d="M15 12H3"></path>
+          </svg>
+          <span id="textoCuenta" class="hidden md:inline">Login</span></a>
+        <img src="img/flag-chile.png" alt="Chile" class="w-6 h-6 rounded-full object-cover">
+      </div>
+    </div>
+  </header>
+
+<main class="flex justify-center px-6 py-14">
+    <section class="w-full max-w-[480px] rounded-[28px] bg-white p-8 shadow-[0_8px_30px_rgba(0,0,0,.08)] md:p-10">
+      <h1 class="font-display text-[36px] leading-none">MI CUENTA</h1>
+      <p class="mt-3 mb-6 text-[15px] text-[var(--muted)]">Ingresa tus datos para acceder a tu cuenta Doggy's.</p>
+
+      <p id="mensajeLogin" class="mensaje-login" aria-live="polite"></p>
+
+      <form id="formLogin" class="space-y-5">
+            <div>
+              <label for="correo" class="block text-sm font-semibold">Correo electrónico</label>
+              <input type="email" id="correo" name="correo" placeholder="ejemplo@correo.com" autocomplete="email" required class="mt-2 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-[15px] outline-none transition focus:border-[var(--doggis-red)] focus:ring-4 focus:ring-[var(--doggis-red)]/15">
+            </div>
+            <div>
+              <label for="password" class="block text-sm font-semibold">Contraseña</label>
+              <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" autocomplete="current-password" required class="mt-2 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-[15px] outline-none transition focus:border-[var(--doggis-red)] focus:ring-4 focus:ring-[var(--doggis-red)]/15">
+            </div>
+        <div>
+          <button type="submit" class="w-full cursor-pointer rounded-full bg-[var(--doggis-red)] py-3 text-[15px] font-bold text-white shadow-md transition hover:brightness-90 disabled:cursor-wait disabled:opacity-60">Iniciar sesión</button>
+          <button type="button" id="btnMostrarRegistro" class="mt-3 w-full cursor-pointer rounded-full border-2 border-[var(--doggis-red)] bg-white py-3 text-[15px] font-bold text-[var(--doggis-red)] transition hover:bg-[#FFF3F5]">Crear cuenta</button>
+        </div>
+      </form>
+
+      <button type="button" id="btnCerrarSesion" style="display:none" class="w-full cursor-pointer rounded-full bg-[var(--doggis-red)] py-3 text-[15px] font-bold text-white shadow-md transition hover:brightness-90 disabled:cursor-wait disabled:opacity-60">Cerrar sesión</button>
+
+      <div id="registroPanel" style="display:none">
+        <h2 class="text-2xl font-black">Crear cuenta</h2>
+        <p class="mt-1 mb-4 text-[15px] text-[var(--muted)]">Completa tus datos para registrarte en Doggy's.</p>
+        <p id="mensajeRegistro" class="mensaje-login" aria-live="polite"></p>
+        <form id="formRegistro" class="space-y-5">
+            <div>
+              <label for="registroNombre" class="block text-sm font-semibold">Nombre completo</label>
+              <input type="text" id="registroNombre" name="nombre" placeholder="Tu nombre completo" autocomplete="name" required class="mt-2 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-[15px] outline-none transition focus:border-[var(--doggis-red)] focus:ring-4 focus:ring-[var(--doggis-red)]/15">
+            </div>
+            <div>
+              <label for="registroCorreo" class="block text-sm font-semibold">Correo electrónico</label>
+              <input type="email" id="registroCorreo" name="correo" placeholder="ejemplo@correo.com" autocomplete="email" required class="mt-2 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-[15px] outline-none transition focus:border-[var(--doggis-red)] focus:ring-4 focus:ring-[var(--doggis-red)]/15">
+            </div>
+            <div>
+              <label for="registroTelefono" class="block text-sm font-semibold">Teléfono</label>
+              <input type="tel" id="registroTelefono" name="telefono" placeholder="912345678" autocomplete="tel" required class="mt-2 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-[15px] outline-none transition focus:border-[var(--doggis-red)] focus:ring-4 focus:ring-[var(--doggis-red)]/15">
+            </div>
+            <div>
+              <label for="registroClave" class="block text-sm font-semibold">Contraseña</label>
+              <input type="password" id="registroClave" name="clave" placeholder="Crea una contraseña" autocomplete="new-password" required minlength="8" class="mt-2 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-[15px] outline-none transition focus:border-[var(--doggis-red)] focus:ring-4 focus:ring-[var(--doggis-red)]/15">
+            </div>
+          <label class="flex items-start gap-3 text-sm leading-relaxed">
+            <input type="checkbox" id="registroTerminos" name="aceptaTerminos" required class="mt-1 size-4 accent-[var(--doggis-red)]">
+            <span>Acepto los términos y condiciones para crear mi cuenta.</span>
+          </label>
+          <div>
+            <button type="submit" class="w-full cursor-pointer rounded-full bg-[var(--doggis-red)] py-3 text-[15px] font-bold text-white shadow-md transition hover:brightness-90 disabled:cursor-wait disabled:opacity-60">Registrarme</button>
+            <button type="button" id="btnVolverLogin" class="mt-3 w-full cursor-pointer rounded-full border-2 border-[var(--doggis-red)] bg-white py-3 text-[15px] font-bold text-[var(--doggis-red)] transition hover:bg-[#FFF3F5]">Volver a iniciar sesión</button>
+          </div>
+        </form>
+      </div>
+
+      <nav class="mt-8 flex flex-col items-center gap-3 text-[15px]" aria-label="Más opciones">
+        <a href="productos.html" class="font-bold text-[var(--doggis-red)] hover:underline">Ir a realizar un pedido</a>
+        <a href="index.html" class="text-[var(--muted)] hover:text-[var(--doggis-red)]">Volver al inicio</a>
+      </nav>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-[var(--doggis-yellow)]">
+    <div class="mx-auto grid max-w-[1200px] grid-cols-2 gap-10 px-6 pt-14 pb-[76px] md:grid-cols-[1.1fr_1fr_1fr_1fr]">
+      <div class="col-span-2 md:col-span-1">
+        <a class="inline-block" href="index.html">
+          <img src="img/logo.webp" alt="Logo Doggis" class="h-[52px] w-auto">
         </a>
+        <div class="mt-6 flex gap-3">
+          <span aria-label="Instagram" role="img" class="flex size-9 items-center justify-center rounded-full bg-white/80 text-[var(--doggis-red)]">
+            <svg aria-hidden="true" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16"><rect height="18" rx="5" width="18" x="3" y="3"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" fill="currentColor" r=".6"></circle></svg>
+          </span>
+          <span aria-label="Facebook" role="img" class="flex size-9 items-center justify-center rounded-full bg-white/80 text-[var(--doggis-red)]">
+            <svg aria-hidden="true" fill="currentColor" height="16" stroke="currentColor" stroke-linejoin="round" stroke-width="1" viewBox="0 0 24 24" width="16"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+          </span>
+          <span aria-label="TikTok" role="img" class="flex size-9 items-center justify-center rounded-full bg-white/80 text-[var(--doggis-red)]">
+            <svg aria-hidden="true" fill="currentColor" height="16" viewBox="0 0 24 24" width="16"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"></path></svg>
+          </span>
+        </div>
+      </div>
 
-        <nav class="header-links" aria-label="Navegación principal">
-            <a href="/productos.html" aria-label="Productos">
-                <i class="fa-solid fa-bag-shopping"></i>
-            </a>
+      <nav aria-labelledby="footer-conocenos">
+        <h3 class="text-[15px] font-semibold text-[var(--doggis-red)]" id="footer-conocenos">Conócenos</h3>
+        <ul class="mt-4 space-y-2 text-[13px] font-medium text-[var(--doggis-red)] [&_a:hover]:underline">
+          <li>Trabaja con Nosotros!</li>
+          <li>Términos y condiciones GyN</li>
+          <li>Franquicias</li>
+          <li>Nosotros</li>
+          <li>Canal de reclamos para clientes</li>
+          <li>Doggis® marca de Inversiones G&amp;N SpA ©2021 Inversiones G&amp;N SpA</li>
+          <li>Whatsapp</li>
+          <li>Canal de denuncias</li>
+          <li>Políticas de privacidad GyN</li>
+          <li>Base Legal Concurso</li>
+          <li>Términos y condiciones</li>
+          <li>Política de privacidad</li>
+        </ul>
+      </nav>
 
-            <a href="/cuenta.html" aria-label="Mi cuenta">
-                <i class="fa-regular fa-user"></i>
-            </a>
-        </nav>
-    </header>
+      <nav aria-labelledby="footer-redes">
+        <h3 class="text-[15px] font-semibold text-[var(--doggis-red)]" id="footer-redes">Redes sociales</h3>
+        <ul class="mt-4 space-y-2 text-[13px] font-medium text-[var(--doggis-red)] [&_a:hover]:underline">
+          <li>Instagram</li>
+          <li>Facebook</li>
+          <li>TikTok</li>
+        </ul>
+      </nav>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="main">
+      <nav aria-labelledby="footer-cuenta">
+        <h3 class="text-[15px] font-semibold text-[var(--doggis-red)]" id="footer-cuenta">Mi cuenta</h3>
+        <ul class="mt-4 space-y-2 text-[13px] font-medium text-[var(--doggis-red)] [&_a:hover]:underline">
+          <li><a href="productos.html">Pedir</a></li>
+          <li><a href="/cuenta.html">Iniciar sesión</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
 
-        <section class="cuenta-card">
+  <!-- Fondo del carrito: clic para cerrar -->
+  <div id="fondoCarrito" class="carrito-fondo" aria-hidden="true"></div>
 
-            <div class="subtitulo">
-                MI CUENTA
-            </div>
+  <!-- Panel del Carrito -->
+  <div id="carritoPanel" role="dialog" aria-label="Tu pedido" aria-modal="true" aria-hidden="true" class="fixed top-0 right-0 z-[100] flex h-full w-full flex-col bg-white p-6 shadow-2xl md:w-[400px]">
+    <div class="mb-4 flex items-center justify-between border-b pb-4">
+      <h2 class="text-2xl font-black text-[var(--ink)]">Tu pedido</h2>
+      <button id="cerrarCarrito" type="button" aria-label="Cerrar carrito" class="cursor-pointer text-xl font-bold text-gray-500 hover:text-[var(--doggis-red)]">✕</button>
+    </div>
+    <p id="estadoPedido" role="status" aria-live="polite" class="estado-pedido"></p>
+    <div class="flex-grow overflow-y-auto">
+      <div id="contenidoCarrito" class="peer"></div>
+      <div class="hidden peer-empty:block pt-14 text-center">
+        <p class="text-xl font-medium text-[var(--ink)]">Tu carrito está vacío</p>
+        <p class="mt-2 text-[15px] text-[var(--muted)]">Los productos que agregues aparecerán aquí.</p>
+      </div>
+    </div>
+  </div>
 
-            <h1>Iniciar sesión</h1>
-
-            <p class="descripcion">
-                Ingresa tus datos para acceder a tu cuenta Doggy's.
-            </p>
-
-            <!-- MENSAJES LOGIN / SESIÓN -->
-            <p
-                id="mensajeLogin"
-                class="mensaje-login"
-                aria-live="polite"
-            ></p>
-
-            <!-- FORMULARIO DE LOGIN -->
-            <form id="formLogin">
-
-                <div class="campo">
-                    <label for="correo">
-                        Correo electrónico
-                    </label>
-
-                    <input
-                        type="email"
-                        id="correo"
-                        name="correo"
-                        placeholder="ejemplo@correo.com"
-                        autocomplete="email"
-                        required
-                    >
-                </div>
-
-                <div class="campo">
-                    <label for="password">
-                        Contraseña
-                    </label>
-
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Ingresa tu contraseña"
-                        autocomplete="current-password"
-                        required
-                    >
-                </div>
-
-                <button
-                    type="submit"
-                    class="btn-principal"
-                >
-                    Iniciar sesión
-                </button>
-
-                <button
-                    type="button"
-                    id="btnMostrarRegistro"
-                    class="btn-secundario"
-                >
-                    Crear cuenta
-                </button>
-
-            </form>
-
-            <!-- BOTÓN CERRAR SESIÓN -->
-            <button
-                type="button"
-                id="btnCerrarSesion"
-                class="btn-principal"
-            >
-                Cerrar sesión
-            </button>
-
-            <!-- FORMULARIO DE REGISTRO -->
-            <div id="registroPanel">
-
-                <h2>Crear cuenta</h2>
-
-                <p class="descripcion">
-                    Completa tus datos para registrarte en Doggy's.
-                </p>
-
-                <p
-                    id="mensajeRegistro"
-                    class="mensaje-login"
-                    aria-live="polite"
-                ></p>
-
-                <form id="formRegistro">
-
-                    <div class="campo">
-                        <label for="registroNombre">
-                            Nombre completo
-                        </label>
-
-                        <input
-                            type="text"
-                            id="registroNombre"
-                            name="nombre"
-                            placeholder="Tu nombre completo"
-                            autocomplete="name"
-                            required
-                        >
-                    </div>
-
-                    <div class="campo">
-                        <label for="registroCorreo">
-                            Correo electrónico
-                        </label>
-
-                        <input
-                            type="email"
-                            id="registroCorreo"
-                            name="correo"
-                            placeholder="ejemplo@correo.com"
-                            autocomplete="email"
-                            required
-                        >
-                    </div>
-
-                    <div class="campo">
-                        <label for="registroTelefono">
-                            Teléfono
-                        </label>
-
-                        <input
-                            type="tel"
-                            id="registroTelefono"
-                            name="telefono"
-                            placeholder="912345678"
-                            autocomplete="tel"
-                            required
-                        >
-                    </div>
-
-                    <div class="campo">
-                        <label for="registroClave">
-                            Contraseña
-                        </label>
-
-                        <input
-                            type="password"
-                            id="registroClave"
-                            name="clave"
-                            placeholder="Crea una contraseña"
-                            autocomplete="new-password"
-                            minlength="8"
-                            required
-                        >
-                    </div>
-
-                    <label class="terminos">
-                        <input
-                            type="checkbox"
-                            id="registroTerminos"
-                            name="aceptaTerminos"
-                            required
-                        >
-
-                        <span>
-                            Acepto los términos y condiciones
-                            para crear mi cuenta.
-                        </span>
-                    </label>
-
-                    <button
-                        type="submit"
-                        class="btn-principal"
-                    >
-                        Registrarme
-                    </button>
-
-                    <button
-                        type="button"
-                        id="btnVolverLogin"
-                        class="btn-secundario"
-                    >
-                        Volver a iniciar sesión
-                    </button>
-
-                </form>
-            </div>
-
-            <!-- NAVEGACIÓN -->
-            <div class="navegacion">
-
-                <a href="/productos.html" class="link-pedidos">
-                    <i class="fa-solid fa-bag-shopping"></i>
-                    Ir a realizar un pedido
-                </a>
-
-                <a href="/index.html">
-                    <i class="fa-solid fa-arrow-left"></i>
-                    Volver al inicio
-                </a>
-
-            </div>
-
-        </section>
-
-    </main>
-
-    <!-- PIE DE PÁGINA -->
-    <footer class="footer">
-        <strong>DOGGY'S</strong>
-        <p>© 2026 Doggy's. Todos los derechos reservados.</p>
-    </footer>
-
-    <!-- JAVASCRIPT EXISTENTE DE LOGIN Y REGISTRO -->
-    <script src="/js/app.js?v=5" defer></script>
-
+  <script src="js/app.js?v=8" defer></script>
 </body>
 </html>

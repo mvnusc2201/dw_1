@@ -1,5 +1,5 @@
 """
-Doggy's - Auth Service (puerto 8100)
+Doggis - Auth Service (puerto 8100)
 
 Responsabilidad: manejar la identidad y emitir la cookie de sesión segura.
 
@@ -115,7 +115,7 @@ def _get_valid_session(token: str | None) -> dict | None:
 # --------------------------------------------------------------------------
 # Aplicación
 # --------------------------------------------------------------------------
-app = FastAPI(title="Doggy's - Auth Service", version="1.0.0")
+app = FastAPI(title="Doggis - Auth Service", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,

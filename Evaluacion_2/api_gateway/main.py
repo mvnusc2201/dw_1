@@ -115,8 +115,11 @@ async def require_auth(request: Request) -> AuthContext:
             headers={"WWW-Authenticate": "Cookie"},
         )
 
-    return AuthContext(username=data["username"], roles=data.get("roles", []))
-
+return AuthContext(
+    user_id=data["user_id"],
+    username=data["username"],
+    roles=data.get("roles", []),
+)
 
 # --------------------------------------------------------------------------
 # Modelos

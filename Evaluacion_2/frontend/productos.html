@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Menú - Doggy's</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    >
+</head>
+
+<body>
+    <header class="header">
+        <div class="contenedor header-contenido">
+
+            <a href="index.html" class="logo">
+                DOGGY'S
+            </a>
+
+            <div class="header-iconos">
+
+                <a href="cuenta.html" class="icono-header" aria-label="Mi cuenta">
+                    <i class="fa-regular fa-user"></i>
+                </a>
+
+                <button
+                    id="btnCarrito"
+                    class="icono-header boton-carrito"
+                    aria-label="Carrito"
+                >
+                    <i class="fa-solid fa-bag-shopping"></i>
+
+                    <span id="contadorCarrito" class="contador-carrito">
+                        0
+                    </span>
+                </button>
+
+            </div>
+
+        </div>
+    </header>
+
+    <main class="menu">
+
+        <div class="contenedor">
+
+            <div class="menu-encabezado">
+
+                <p class="hero-superior">
+                    DOGGY'S
+                </p>
+
+                <h1>
+                    Nuestro menú
+                </h1>
+
+                <p>
+                    Elige tu bajón favorito y agrégalo a tu pedido.
+                </p>
+
+            </div>
+
+            <div class="filtros-menu">
+
+                <button class="filtro-btn activo" data-categoria="todos">
+                    Todos
+                </button>
+
+                <button class="filtro-btn" data-categoria="hotdogs">
+                    Hot Dogs
+                </button>
+
+                <button class="filtro-btn" data-categoria="snacks">
+                    Snacks
+                </button>
+
+                <button class="filtro-btn" data-categoria="compartir">
+                    Para compartir
+                </button>
+
+                <button class="filtro-btn" data-categoria="wraps">
+                    Chicken Wraps
+                </button>
+
+                <button class="filtro-btn" data-categoria="helados">
+                    Helados
+                </button>
+
+                <button class="filtro-btn" data-categoria="burgers">
+                    Chicken Burger
+                </button>
+
+            </div>
+
+            <div class="grid-productos" id="gridProductos">
+
+                <article class="producto-card" data-categoria="hotdogs">
+
+                    <div class="producto-imagen">
+                        🌭
+                    </div>
+
+                    <div class="producto-info">
+
+                        <h2>
+                            Doggy Clásico
+                        </h2>
+
+                        <p>
+                            Salchicha, tomate, palta y mayonesa.
+                        </p>
+
+                        <div class="producto-footer">
+
+                            <strong>
+                                $4.990
+                            </strong>
+
+                            <button
+                                class="btn-agregar"
+                                data-nombre="Doggy Clásico"
+                                data-precio="4990"
+                            >
+                                <i class="fa-solid fa-plus"></i>
+                                Agregar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <article class="producto-card" data-categoria="hotdogs">
+
+                    <div class="producto-imagen">
+                        🌭
+                    </div>
+
+                    <div class="producto-info">
+
+                        <h2>
+                            Doggy Americano
+                        </h2>
+
+                        <p>
+                            Salchicha, cheddar, cebolla crispy y salsa especial.
+                        </p>
+
+                        <div class="producto-footer">
+
+                            <strong>
+                                $5.490
+                            </strong>
+
+                            <button
+                                class="btn-agregar"
+                                data-nombre="Doggy Americano"
+                                data-precio="5490"
+                            >
+                                <i class="fa-solid fa-plus"></i>
+                                Agregar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <article class="producto-card" data-categoria="snacks">
+
+                    <div class="producto-imagen">
+                        🍟
+                    </div>
+
+                    <div class="producto-info">
+
+                        <h2>
+                            Papas Doggy's
+                        </h2>
+
+                        <p>
+                            Papas fritas crujientes con salsa a elección.
+                        </p>
+
+                        <div class="producto-footer">
+
+                            <strong>
+                                $3.490
+                            </strong>
+
+                            <button
+                                class="btn-agregar"
+                                data-nombre="Papas Doggy's"
+                                data-precio="3490"
+                            >
+                                <i class="fa-solid fa-plus"></i>
+                                Agregar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <article class="producto-card" data-categoria="compartir">
+
+                    <div class="producto-imagen">
+                        🍗
+                    </div>
+
+                    <div class="producto-info">
+
+                        <h2>
+                            Box para compartir
+                        </h2>
+
+                        <p>
+                            Papas, chicken bites y salsas para compartir.
+                        </p>
+
+                        <div class="producto-footer">
+
+                            <strong>
+                                $8.990
+                            </strong>
+
+                            <button
+                                class="btn-agregar"
+                                data-nombre="Box para compartir"
+                                data-precio="8990"
+                            >
+                                <i class="fa-solid fa-plus"></i>
+                                Agregar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <article class="producto-card" data-categoria="wraps">
+
+                    <div class="producto-imagen">
+                        🌯
+                    </div>
+
+                    <div class="producto-info">
+
+                        <h2>
+                            Chicken Wrap
+                        </h2>
+
+                        <p>
+                            Pollo crispy, lechuga, tomate y salsa Doggy's.
+                        </p>
+
+                        <div class="producto-footer">
+
+                            <strong>
+                                $5.990
+                            </strong>
+
+                            <button
+                                class="btn-agregar"
+                                data-nombre="Chicken Wrap"
+                                data-precio="5990"
+                            >
+                                <i class="fa-solid fa-plus"></i>
+                                Agregar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <article class="producto-card" data-categoria="helados">
+
+                    <div class="producto-imagen">
+                        🍦
+                    </div>
+
+                    <div class="producto-info">
+
+                        <h2>
+                            Sundae Doggy's
+                        </h2>
+
+                        <p>
+                            Helado cremoso con salsa de chocolate o frutilla.
+                        </p>
+
+                        <div class="producto-footer">
+
+                            <strong>
+                                $2.990
+                            </strong>
+
+                            <button
+                                class="btn-agregar"
+                                data-nombre="Sundae Doggy's"
+                                data-precio="2990"
+                            >
+                                <i class="fa-solid fa-plus"></i>
+                                Agregar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <article class="producto-card" data-categoria="burgers">
+
+                    <div class="producto-imagen">
+                        🍔
+                    </div>
+
+                    <div class="producto-info">
+
+                        <h2>
+                            Chicken Burger
+                        </h2>
+
+                        <p>
+                            Pollo crispy, queso cheddar, lechuga y salsa especial.
+                        </p>
+
+                        <div class="producto-footer">
+
+                            <strong>
+                                $6.490
+                            </strong>
+
+                            <button
+                                class="btn-agregar"
+                                data-nombre="Chicken Burger"
+                                data-precio="6490"
+                            >
+                                <i class="fa-solid fa-plus"></i>
+                                Agregar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <div class="volver-menu">
+
+                <a href="index.html" class="btn-secundario">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Volver al inicio
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="footer">
+
+        <div class="contenedor footer-grid">
+
+            <div class="footer-marca">
+
+                <h2>
+                    DOGGY'S
+                </h2>
+
+                <p>
+                    Comida rica para cualquier bajón.
+                </p>
+
+            </div>
+
+
+            <div class="footer-columna">
+
+                <h3>
+                    CONÓCENOS
+                </h3>
+
+                <a href="#">
+                    Nosotros
+                </a>
+
+                <a href="#">
+                    Trabaja con nosotros
+                </a>
+
+                <a href="#">
+                    WhatsApp
+                </a>
+
+            </div>
+
+
+            <div class="footer-columna">
+
+                <h3>
+                    REDES SOCIALES
+                </h3>
+
+                <a href="#">
+                    Instagram
+                </a>
+
+                <a href="#">
+                    Facebook
+                </a>
+
+                <a href="#">
+                    TikTok
+                </a>
+
+            </div>
+
+
+            <div class="footer-columna">
+
+                <h3>
+                    MI CUENTA
+                </h3>
+
+                <a href="productos.html">
+                    Pedir
+                </a>
+
+                <a href="cuenta.html">
+                    Iniciar sesión
+                </a>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+    <div id="carritoPanel" class="carrito-panel">
+
+        <div class="carrito-header">
+
+            <h2>
+                Tu pedido
+            </h2>
+
+            <button id="cerrarCarrito">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div id="contenidoCarrito" class="contenido-carrito">
+
+            <p>
+                Tu carrito está vacío.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>

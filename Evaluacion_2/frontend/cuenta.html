@@ -1,0 +1,500 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mi cuenta - Doggy's</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        :root {
+            --navy: #1d2947;
+            --red: #ed3445;
+            --green: #159f90;
+            --background: #f7f8fa;
+            --muted: #8493af;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--navy);
+            background: var(--background);
+        }
+
+        .header {
+            background: #fff;
+            border-bottom: 1px solid var(--red);
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 45px;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-decoration: none;
+            color: var(--navy);
+        }
+
+        .header-links {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .header-links a {
+            color: var(--navy);
+            text-decoration: none;
+            font-size: 24px;
+        }
+
+        .main {
+            min-height: calc(100vh - 160px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 20px;
+        }
+
+        .cuenta-card {
+            width: 100%;
+            max-width: 590px;
+            background: #fff;
+            padding: 48px;
+            border-radius: 22px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .subtitulo {
+            font-size: 25px;
+            color: var(--green);
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            margin: 0 0 14px;
+            font-size: 38px;
+            color: var(--navy);
+        }
+
+        .descripcion {
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .campo {
+            margin-bottom: 20px;
+        }
+
+        .campo label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #d9dfeb;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .campo input:focus {
+            border-color: var(--green);
+        }
+
+        .btn-principal {
+            width: 100%;
+            border: 0;
+            border-radius: 10px;
+            background: var(--red);
+            color: #fff;
+            padding: 16px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-principal:hover {
+            background: #ce2739;
+        }
+
+        .btn-principal:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .btn-secundario {
+            width: 100%;
+            margin-top: 14px;
+            padding: 14px;
+            background: #fff;
+            border: 1px solid var(--red);
+            color: var(--red);
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-secundario:hover {
+            background: #fff3f4;
+        }
+
+        .mensaje-login {
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 600;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .mensaje-login.error {
+            color: #dc2638;
+        }
+
+        .mensaje-login.exito {
+            color: var(--green);
+        }
+
+        .terminos {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            font-size: 14px;
+            margin: 22px 0;
+            line-height: 1.5;
+        }
+
+        .terminos input {
+            margin-top: 4px;
+        }
+
+        .navegacion {
+            margin-top: 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .navegacion a {
+            text-decoration: none;
+            color: var(--navy);
+            font-size: 16px;
+        }
+
+        .navegacion a:hover {
+            color: var(--red);
+        }
+
+        .link-pedidos {
+            font-weight: bold;
+            color: var(--red) !important;
+        }
+
+        #registroPanel {
+            display: none;
+        }
+
+        #btnCerrarSesion {
+            display: none;
+        }
+
+        .footer {
+            background: #fff;
+            border-top: 1px solid var(--red);
+            text-align: center;
+            padding: 26px 16px;
+            color: var(--navy);
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                height: 70px;
+                padding: 0 20px;
+            }
+
+            .logo {
+                font-size: 27px;
+            }
+
+            .main {
+                padding: 35px 15px;
+            }
+
+            .cuenta-card {
+                padding: 30px 22px;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            .subtitulo {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ENCABEZADO -->
+    <header class="header">
+        <a href="/index.html" class="logo">
+            DOGGY'S
+        </a>
+
+        <nav class="header-links" aria-label="Navegación principal">
+            <a href="/productos.html" aria-label="Productos">
+                <i class="fa-solid fa-bag-shopping"></i>
+            </a>
+
+            <a href="/cuenta.html" aria-label="Mi cuenta">
+                <i class="fa-regular fa-user"></i>
+            </a>
+        </nav>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main">
+
+        <section class="cuenta-card">
+
+            <div class="subtitulo">
+                MI CUENTA
+            </div>
+
+            <h1>Iniciar sesión</h1>
+
+            <p class="descripcion">
+                Ingresa tus datos para acceder a tu cuenta Doggy's.
+            </p>
+
+            <!-- MENSAJES LOGIN / SESIÓN -->
+            <p
+                id="mensajeLogin"
+                class="mensaje-login"
+                aria-live="polite"
+            ></p>
+
+            <!-- FORMULARIO DE LOGIN -->
+            <form id="formLogin">
+
+                <div class="campo">
+                    <label for="correo">
+                        Correo electrónico
+                    </label>
+
+                    <input
+                        type="email"
+                        id="correo"
+                        name="correo"
+                        placeholder="ejemplo@correo.com"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="password">
+                        Contraseña
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Ingresa tu contraseña"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn-principal"
+                >
+                    Iniciar sesión
+                </button>
+
+                <button
+                    type="button"
+                    id="btnMostrarRegistro"
+                    class="btn-secundario"
+                >
+                    Crear cuenta
+                </button>
+
+            </form>
+
+            <!-- BOTÓN CERRAR SESIÓN -->
+            <button
+                type="button"
+                id="btnCerrarSesion"
+                class="btn-principal"
+            >
+                Cerrar sesión
+            </button>
+
+            <!-- FORMULARIO DE REGISTRO -->
+            <div id="registroPanel">
+
+                <h2>Crear cuenta</h2>
+
+                <p class="descripcion">
+                    Completa tus datos para registrarte en Doggy's.
+                </p>
+
+                <p
+                    id="mensajeRegistro"
+                    class="mensaje-login"
+                    aria-live="polite"
+                ></p>
+
+                <form id="formRegistro">
+
+                    <div class="campo">
+                        <label for="registroNombre">
+                            Nombre completo
+                        </label>
+
+                        <input
+                            type="text"
+                            id="registroNombre"
+                            name="nombre"
+                            placeholder="Tu nombre completo"
+                            autocomplete="name"
+                            required
+                        >
+                    </div>
+
+                    <div class="campo">
+                        <label for="registroCorreo">
+                            Correo electrónico
+                        </label>
+
+                        <input
+                            type="email"
+                            id="registroCorreo"
+                            name="correo"
+                            placeholder="ejemplo@correo.com"
+                            autocomplete="email"
+                            required
+                        >
+                    </div>
+
+                    <div class="campo">
+                        <label for="registroTelefono">
+                            Teléfono
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="registroTelefono"
+                            name="telefono"
+                            placeholder="912345678"
+                            autocomplete="tel"
+                            required
+                        >
+                    </div>
+
+                    <div class="campo">
+                        <label for="registroClave">
+                            Contraseña
+                        </label>
+
+                        <input
+                            type="password"
+                            id="registroClave"
+                            name="clave"
+                            placeholder="Crea una contraseña"
+                            autocomplete="new-password"
+                            minlength="8"
+                            required
+                        >
+                    </div>
+
+                    <label class="terminos">
+                        <input
+                            type="checkbox"
+                            id="registroTerminos"
+                            name="aceptaTerminos"
+                            required
+                        >
+
+                        <span>
+                            Acepto los términos y condiciones
+                            para crear mi cuenta.
+                        </span>
+                    </label>
+
+                    <button
+                        type="submit"
+                        class="btn-principal"
+                    >
+                        Registrarme
+                    </button>
+
+                    <button
+                        type="button"
+                        id="btnVolverLogin"
+                        class="btn-secundario"
+                    >
+                        Volver a iniciar sesión
+                    </button>
+
+                </form>
+            </div>
+
+            <!-- NAVEGACIÓN -->
+            <div class="navegacion">
+
+                <a href="/productos.html" class="link-pedidos">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    Ir a realizar un pedido
+                </a>
+
+                <a href="/index.html">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Volver al inicio
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="footer">
+        <strong>DOGGY'S</strong>
+        <p>© 2026 Doggy's. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- JAVASCRIPT EXISTENTE DE LOGIN Y REGISTRO -->
+    <script src="/js/app.js?v=5" defer></script>
+
+</body>
+</html>

@@ -1,6 +1,10 @@
 import httpx
 import strawberry
+import os
+import secrets
 
+from graphql import GraphQLError
+from strawberry.types import Info
 from fastapi import FastAPI
 from strawberry.fastapi import GraphQLRouter
 
@@ -39,36 +43,60 @@ class ResumenPedido:
     producto: Producto
 
 
+
 @strawberry.type
 class Query:
 
     @strawberry.field
     async def resumen_pedido(
         self,
+        info: Info,
         pedido_id: str
     ) -> ResumenPedido:
 
-        async with httpx.AsyncClient() as client:
+        # Verificar que la petición venga del API Gateway.
+        request = info.context["request"]
+
+        clave_esperada = os.getenv("GRAPHQL_INTERNAL_KEY", "")
+        clave_recibida = request.headers.get("X-Internal-Key", "")
+
+        if (
+            not clave_esperada
+            or not secrets.compare_digest(
+                clave_recibida,
+                clave_esperada
+            )
+        ):
+            raise GraphQLError("Acceso interno no autorizado")
+
+        usuario_id = request.headers.get(
+            "X-Authenticated-User", ""
+        )
+
+        if not usuario_id:
+            raise GraphQLError("Usuario no autenticado")
+
+        async with httpx.AsyncClient(timeout=5.0) as client:
 
             pedido_response = await client.get(
                 f"{ORDERS_URL}/pedidos/{pedido_id}"
             )
 
             if pedido_response.status_code != 200:
-                raise Exception(
-                    "Pedido no encontrado"
-                )
+                raise GraphQLError("Pedido no encontrado")
 
             pedido = pedido_response.json()
+
+            # El cliente solo consulta sus propios pedidos.
+            if pedido.get("cliente_id") != usuario_id:
+                raise GraphQLError("Acceso denegado al pedido")
 
             producto_response = await client.get(
                 f"{INVENTORY_URL}/productos/{pedido['producto_id']}"
             )
 
             if producto_response.status_code != 200:
-                raise Exception(
-                    "Producto no encontrado"
-                )
+                raise GraphQLError("Producto no encontrado")
 
             producto = producto_response.json()
 

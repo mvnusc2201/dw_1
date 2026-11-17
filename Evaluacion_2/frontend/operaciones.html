@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doggis - Centro de operaciones</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind compilado localmente: no depende de un CDN -->
+  <link rel="stylesheet" href="css/tailwind.css?v=7">
+  <link rel="stylesheet" href="css/style.css?v=7">
+</head>
+<body class="min-h-screen bg-white page-operaciones">
+  <div class="grid min-h-screen grid-rows-[auto_1fr] md:grid-cols-2 md:grid-rows-none">
+
+    <div class="relative h-64 overflow-hidden md:h-auto">
+      <img src="img/operaciones-hero.jpg" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover">
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--ink)]/95 via-[var(--doggis-red)]/55 to-[var(--doggis-yellow)]/25"></div>
+
+      <div class="absolute left-6 top-6 md:left-14 md:top-10">
+        <div class="rounded-2xl bg-white px-4 py-2.5 shadow-lg">
+          <img src="img/logo.webp" alt="Doggis" class="h-8 w-auto md:h-10">
+        </div>
+      </div>
+
+      <div class="relative flex h-full flex-col justify-end px-6 pb-8 md:px-14 md:pb-14">
+        <h1 class="font-display text-[36px] leading-[1.05] text-white md:text-[56px]">CENTRO DE<br class="hidden md:block"> OPERACIONES</h1>
+        <p class="mt-3 max-w-sm text-[15px] text-white/85 md:text-[17px]">Productos, sesiones y sucursales en un solo lugar.</p>
+        <div class="mt-5 hidden flex-wrap gap-2 md:flex">
+          <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur">Inventario</span>
+          <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur">Sesiones seguras</span>
+          <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur">Multi-sucursal</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-start justify-center bg-gradient-to-b from-white to-orange-50/60 px-6 pb-12 pt-10 md:items-center md:px-14 md:py-12">
+      <div class="w-full max-w-sm">
+        <img src="img/logo.webp" alt="Doggis" class="mb-6 h-12 w-auto">
+        <h2 class="text-[26px] font-bold">Bienvenido de vuelta</h2>
+        <p class="mt-1 text-sm text-[var(--muted)]">Ingresa tus credenciales para continuar.</p>
+
+        <div role="status" class="mt-6 rounded-xl border border-[var(--doggis-yellow)] bg-orange-50 p-4 text-sm leading-relaxed">
+          <strong class="block">Acceso del personal aún no habilitado</strong>
+          El sistema todavía solo tiene cuentas de clientes, por eso este formulario está desactivado.
+          Si quieres pedir, <a href="cuenta.html" class="font-semibold text-[var(--doggis-red)] underline">ingresa en Mi cuenta</a>.
+        </div>
+
+        <form class="mt-6 space-y-5" aria-disabled="true" onsubmit="return false">
+          <fieldset disabled class="space-y-5">
+            <div>
+              <label for="usuario" class="block text-sm font-semibold">Nombre de usuario</label>
+              <input id="usuario" type="text" placeholder="Ej: ana o ernesto" class="mt-2 w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-[15px] text-[var(--muted)] placeholder:text-[var(--muted)] cursor-not-allowed">
+            </div>
+            <div>
+              <label for="clave" class="block text-sm font-semibold">Contraseña</label>
+              <input id="clave" type="password" placeholder="••••••••" class="mt-2 w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-[15px] text-[var(--muted)] placeholder:text-[var(--muted)] cursor-not-allowed">
+            </div>
+            <button type="submit" class="w-full cursor-not-allowed rounded-full bg-gradient-to-r from-[var(--doggis-red)] to-[#F0603F] py-3 text-[15px] font-bold text-white opacity-50">Entrar al sistema</button>
+          </fieldset>
+        </form>
+
+        <p class="mt-8 text-xs leading-relaxed text-[var(--muted)]">Acceso restringido a personal autorizado. Sistema protegido por Cookies HttpOnly.</p>
+        <a href="index.html" class="mt-4 inline-block text-sm font-semibold text-[var(--doggis-red)] hover:underline">← Volver al portal de clientes</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,162 @@
+/* Doggy's - estilos compartidos (se cargan después de Tailwind) */
+
+/* Carrito lateral: la clase "abierto" la controla js/app.js */
+#carritoPanel {
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.3s ease, visibility 0.3s;
+}
+
+#carritoPanel.abierto {
+    transform: none;
+    visibility: visible;
+}
+
+/* Filtros del catálogo (clases usadas por js/app.js) */
+.oculto {
+    display: none !important;
+}
+
+.filtro-btn.activo {
+    background-color: #E1004C;
+    border-color: #E1004C;
+    color: #fff;
+}
+
+/* Mensajes de login, registro y pedido */
+.mensaje-login {
+    margin: 0 0 16px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.mensaje-login:empty {
+    display: none;
+}
+
+.mensaje-login.error {
+    color: #D62828;
+}
+
+.mensaje-login.exito {
+    color: #1E8A5B;
+}
+
+.estado-pedido {
+    margin-bottom: 12px;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.45;
+    background: #F8F9FA;
+}
+
+.estado-pedido:empty {
+    display: none;
+}
+
+.estado-pedido.exito {
+    background: #E7F6EE;
+    color: #17694A;
+}
+
+.estado-pedido.error {
+    background: #FDECEE;
+    color: #B3123B;
+}
+
+/* Accesibilidad */
+:focus-visible {
+    outline: 3px solid #1D2947;
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
+        animation: none !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Variables visuales y tamaño base; independientes de JavaScript/CDN */
+:root {
+    --doggis-yellow: #F4A261;
+    --doggis-yellow-deep: #E3924B;
+    --doggis-red: #E1004C;
+    --doggis-coral: #C8544F;
+    --ink: #1B1B1B;
+    --muted: #6E6E6E;
+}
+body {
+    background: #F8F9FA;
+    color: var(--ink);
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: clip;
+}
+.page-operaciones { --ink: #1D2947; --muted: #6E7A91; background: #fff; }
+body.carrito-visible { overflow: hidden; }
+
+/* El carrito se desplaza realmente fuera de pantalla al cerrarse */
+#carritoPanel {
+    width: min(100%, 420px);
+    max-width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 101;
+    transform: translate3d(105%, 0, 0);
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform .28s ease, visibility .28s ease;
+    will-change: transform;
+    box-sizing: border-box;
+}
+#carritoPanel.abierto {
+    transform: translate3d(0, 0, 0);
+    visibility: visible;
+    pointer-events: auto;
+}
+#carritoPanel > .flex-grow { min-height: 0; }
+.carrito-fondo {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(18, 23, 34, .46);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .28s ease, visibility .28s ease;
+}
+body.carrito-visible .carrito-fondo {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* Correcciones de escala y distribución */
+.hero-doggys { height: clamp(300px, 36vw, 510px); }
+.hero-doggys h1 { font-size: clamp(42px, 6vw, 78px); }
+.producto-card img { max-height: 260px; }
+.producto-card { min-width: 0; }
+#gridProductos { align-items: stretch; }
+#gridProductos .producto-card { height: 100%; }
+
+@media (max-width: 640px) {
+    .hero-doggys { height: 320px; }
+    .hero-doggys h1 { font-size: clamp(38px, 10vw, 56px); }
+    #carritoPanel { padding: 20px 18px; }
+    #carritoPanel h2 { font-size: 23px; }
+    .producto-card img { max-height: 200px; }
+    .producto-card .flex.items-center.justify-between { gap: 10px; flex-wrap: wrap; }
+    .producto-card .btn-agregar { min-height: 40px; }
+}

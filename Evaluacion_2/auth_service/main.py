@@ -339,14 +339,17 @@ def login(body: LoginRequest, response: Response, request: Request):
 def introspect(request: Request, body: IntrospectRequest | None = None):
     """Usado por el API Gateway. Acepta el token en el body o en la cookie."""
     token = (body.token if body else None) or request.cookies.get(COOKIE_NAME)
+    print("[AUTH SERVICE] Recibida solicitud de validación de autenticación/autorización (/auth/introspect)")
     session = _get_valid_session(token)
 
     if session is None:
+        print("[AUTH SERVICE] Validación DENEGADA: sesión inválida o expirada")
         return IntrospectResponse(active=False)
 
+    print(f"[AUTH SERVICE] Validación APROBADA -> usuario='{session['username']}', roles={session['roles']}")
     return IntrospectResponse(
         active=True,
-        user_id=session["user_id"],  # NUEVO: identificador del usuario
+        user_id=session["user_id"],
         username=session["username"],
         roles=session["roles"],
         exp=int(session["exp"]),

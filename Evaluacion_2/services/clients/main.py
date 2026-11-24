@@ -10,6 +10,11 @@ from fastapi import Response
 from pydantic import BaseModel, Field
 from pymongo.errors import DuplicateKeyError
 
+client = MongoClient(
+    os.getenv("MONGO_URL")
+    or os.getenv("MONGO_URI")
+    or "mongodb://mongodb:27017/"
+)
 
 app = FastAPI(
     title="Clients Service",
@@ -96,7 +101,7 @@ def registrar_perfil_interno(
 
     return serialize_cliente(perfil)
 
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient(os.getenv("MONGO_URL", "mongodb://localhost:27017/"))
 
 db = client["UNAB"]
 clientes_collection = db["clientes"]

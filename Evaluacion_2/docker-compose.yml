@@ -1,0 +1,98 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: doggys-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  clients:
+    build: .
+    container_name: doggys-clients
+    command: uvicorn services.clients.main:app --host 0.0.0.0 --port 9101
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/
+      - CLIENTS_INTERNAL_KEY=doggys-clients-secret-2026
+    depends_on:
+      - mongodb
+
+  inventory:
+    build: .
+    container_name: doggys-inventory
+    command: uvicorn services.inventory.main:app --host 0.0.0.0 --port 9102
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/
+    depends_on:
+      - mongodb
+
+  orders:
+    build: .
+    container_name: doggys-orders
+    command: uvicorn services.orders.main:app --host 0.0.0.0 --port 9103
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/
+      - INVENTORY_URL=http://inventory:9102
+    depends_on:
+      - mongodb
+      - inventory
+
+  payments:
+    build: .
+    container_name: doggys-payments
+    command: uvicorn services.payments.main:app --host 0.0.0.0 --port 9104
+    ports:
+      - "9104:9104"
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/
+      - ORDERS_URL=http://orders:9103
+      - PAYMENTS_INTERNAL_KEY=doggys-payments-secret-2026
+    depends_on:
+      - mongodb
+      - orders
+
+  auth_service:
+    build: .
+    container_name: doggys-auth-service
+    command: uvicorn auth_service.main:app --host 0.0.0.0 --port 8100
+    ports:
+      - "8100:8100"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/
+      - CLIENTS_SERVICE_URL=http://clients:9101
+      - CLIENTS_INTERNAL_KEY=doggys-clients-secret-2026
+    depends_on:
+      - mongodb
+      - clients
+
+  api_gateway:
+    build: .
+    container_name: doggys-api-gateway
+    command: uvicorn api_gateway.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    environment:
+      - AUTH_SERVICE_URL=http://auth_service:8100
+      - INVENTORY_SERVICE_URL=http://inventory:9102
+      - ORDERS_SERVICE_URL=http://orders:9103
+      - PAYMENTS_SERVICE_URL=http://payments:9104
+      - PAYMENTS_INTERNAL_KEY=doggys-payments-secret-2026
+    depends_on:
+      - auth_service
+      - inventory
+      - orders
+      - payments
+
+  frontend:
+    image: nginx:alpine
+    container_name: doggys-frontend
+    ports:
+      - "5500:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - api_gateway
+
+volumes:
+  mongo_data:

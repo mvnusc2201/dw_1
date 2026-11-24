@@ -60,35 +60,20 @@ async def proteger_payments(
     request: Request,
     call_next
 ):
-
     if request.url.path.startswith("/pagos"):
+        clave_esperada = os.getenv("PAYMENTS_INTERNAL_KEY", "")
+        clave_recibida = request.headers.get("X-Internal-Key", "")
 
-        clave_esperada = os.getenv(
-            "PAYMENTS_INTERNAL_KEY",
-            ""
-        )
-
-        clave_recibida = request.headers.get(
-            "X-Internal-Key",
-            ""
-        )
-
-        if (
-            not clave_esperada
-            or not secrets.compare_digest(
-                clave_recibida,
-                clave_esperada
-            )
-        ):
+        if not clave_esperada or not secrets.compare_digest(clave_recibida, clave_esperada):
+            print(f"[BACKEND PAYMENTS] BLOQUEADO (403): Secreto interno 'X-Internal-Key' inválido o ausente en {request.method} {request.url.path}")
             return JSONResponse(
                 status_code=403,
-                content={
-                    "detail": "Acceso interno no autorizado"
-                }
+                content={"detail": "Acceso interno no autorizado"}
             )
 
-    return await call_next(request)
+        print(f"[BACKEND PAYMENTS] AUTORIZADO: Secreto interno 'PAYMENTS_INTERNAL_KEY' verificado en {request.method} {request.url.path}")
 
+    return await call_next(request)
 
 # ==========================================
 # SERIALIZACIÓN
@@ -259,13 +244,14 @@ async def crear_pago(data: dict):
         "proveedor": "simulado"
     }
 
-    # 5. Registrar el pago.
+# 5. Registrar el pago.
     # El índice único impide duplicados simultáneos.
 
     try:
         resultado = pagos_collection.insert_one(
             nuevo_pago
         )
+        print(f"[PERSISTENCIA MONGODB] INSERT exitoso en colección 'pagos' -> _id={resultado.inserted_id}, pedido_id={nuevo_pago.get('pedido_id')}, estado={nuevo_pago.get('estado')}")
 
     except DuplicateKeyError as exc:
         raise HTTPException(
@@ -278,6 +264,7 @@ async def crear_pago(data: dict):
     pago_creado = pagos_collection.find_one({
         "_id": resultado.inserted_id
     })
+    print(f"[PERSISTENCIA MONGODB] CONSULTA (find_one) exitosa en colección 'pagos' -> _id={resultado.inserted_id}")
 
     if pago_creado is None:
         raise HTTPException(

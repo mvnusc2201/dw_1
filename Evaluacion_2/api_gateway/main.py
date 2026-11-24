@@ -141,6 +141,7 @@ class AuthContext:
 async def require_auth(request: Request) -> AuthContext:
     token = request.cookies.get(COOKIE_NAME)
     if not token:
+        print(f"[API GATEWAY] Acceso denegado (401): falta cookie de sesión en {request.method} {request.url.path}")
         raise HTTPException(
             status_code=401,
             detail="No autenticado: falta la cookie de sesión",
@@ -148,6 +149,7 @@ async def require_auth(request: Request) -> AuthContext:
         )
 
     try:
+        print(f"[API GATEWAY] Solicitando validación de sesión a Auth Service ({AUTH_SERVICE_URL}/auth/introspect) para {request.method} {request.url.path}")
         resp = await request.app.state.http.post(
             f"{AUTH_SERVICE_URL}/auth/introspect", json={"token": token}
         )
@@ -155,22 +157,24 @@ async def require_auth(request: Request) -> AuthContext:
         raise HTTPException(status_code=503, detail="Auth Service no disponible")
 
     if resp.status_code != 200:
+        print(f"[API GATEWAY] Auth Service rechazó la sesión (HTTP {resp.status_code})")
         raise HTTPException(status_code=401, detail="Sesión no válida")
 
     data = resp.json()
     if not data.get("active"):
+        print("[API GATEWAY] Sesión inválida o expirada según Auth Service")
         raise HTTPException(
             status_code=401,
             detail="Sesión inválida o expirada",
             headers={"WWW-Authenticate": "Cookie"},
         )
 
+    print(f"[API GATEWAY] Sesión validada por Auth Service -> usuario='{data['username']}', roles={data.get('roles', [])}")
     return AuthContext(
         user_id=data["user_id"],
         username=data["username"],
         roles=data.get("roles", []),
     )
-
 # --------------------------------------------------------------------------
 # Modelos
 # --------------------------------------------------------------------------
@@ -414,6 +418,7 @@ async def create_order(
     """Crea un pedido con identidad y precio verificados."""
 
     if "cliente" not in ctx.roles:
+        print(f"[API GATEWAY] Acceso denegado (403): usuario='{ctx.username}' sin rol 'cliente'")
         raise HTTPException(status_code=403, detail="Acceso denegado")
 
     datos = {
@@ -423,6 +428,7 @@ async def create_order(
     }
 
     try:
+        print(f"[API GATEWAY] Enrutando creación de pedido -> {ORDERS_SERVICE_URL}/pedidos (usuario='{ctx.username}', producto_id='{body.producto_id}')")
         upstream = await request.app.state.http.post(
             f"{ORDERS_SERVICE_URL}/pedidos",
             json=datos,
@@ -464,6 +470,7 @@ async def create_order(
             detail="Identidad del pedido inconsistente"
         )
 
+    print(f"[API GATEWAY] Pedido creado en Orders Service -> pedido_id='{pedido.get('id') or pedido.get('_id')}'")
     return {"created": pedido}
 
 
@@ -477,13 +484,6 @@ class CrearPagoRequest(BaseModel):
 
 @app.post("/api/v1/payments", status_code=201)
 async def crear_pago_gateway(
-    # 3. Registrar pago pendiente.
-try:
-    pago_respuesta = await request.app.state.http.post(
-        f"{PAYMENTS_SERVICE_URL}/pagos",
-        json={"pedido_id": body.pedido_id},
-        headers=ctx.downstream_headers
-    )
     body: CrearPagoRequest,
     request: Request,
     ctx: AuthContext = Depends(require_auth)
@@ -492,6 +492,7 @@ try:
 
     try:
         # 1. Consultar el pedido real.
+        print(f"[API GATEWAY] Enrutando consulta de pedido -> {ORDERS_SERVICE_URL}/pedidos/{body.pedido_id} (usuario='{ctx.username}')")
         pedido_respuesta = await request.app.state.http.get(
             f"{ORDERS_SERVICE_URL}/pedidos/{body.pedido_id}",
             headers=ctx.downstream_headers
@@ -525,6 +526,7 @@ try:
 
     # 2. Verificar que el pedido pertenece al usuario.
     if pedido.get("cliente_id") != ctx.user_id:
+        print(f"[API GATEWAY] Acceso denegado (403): usuario='{ctx.username}' intentó pagar pedido ajeno")
         raise HTTPException(
             status_code=403,
             detail="No puedes pagar un pedido de otro usuario"
@@ -544,10 +546,15 @@ try:
 
     # 3. Registrar pago pendiente.
     try:
+        print(f"[API GATEWAY] Enrutando registro de pago -> {PAYMENTS_SERVICE_URL}/pagos (pedido_id='{body.pedido_id}', monto={monto}) con X-Internal-Key")
+        headers_pago = {
+            **ctx.downstream_headers,
+            "X-Internal-Key": PAYMENTS_INTERNAL_KEY,
+        }
         pago_respuesta = await request.app.state.http.post(
             f"{PAYMENTS_SERVICE_URL}/pagos",
             json={"pedido_id": body.pedido_id},
-            headers=ctx.downstream_headers
+            headers=headers_pago
         )
 
     except httpx.RequestError as exc:
@@ -581,8 +588,8 @@ try:
             detail="Los datos del pago no coinciden con el pedido"
         )
 
+    print(f"[API GATEWAY] Pago registrado correctamente -> pago_id='{pago.get('id') or pago.get('_id')}', estado='{pago.get('estado')}'")
     return {"payment": pago}
-
 
 
 @app.post("/graphql")

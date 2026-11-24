@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, HTTPException
 from pymongo import MongoClient
 from bson import ObjectId
@@ -9,7 +10,7 @@ app = FastAPI(
 )
 
 
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient(os.getenv("MONGO_URL", "mongodb://localhost:27017/"))
 
 db = client["UNAB"]
 productos_collection = db["productos"]

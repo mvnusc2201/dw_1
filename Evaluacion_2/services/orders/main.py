@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, HTTPException
 from pymongo import MongoClient
 from bson import ObjectId
@@ -10,13 +11,13 @@ app = FastAPI(
 )
 
 
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient(os.getenv("MONGO_URL", "mongodb://localhost:27017/"))
 
 db = client["UNAB"]
 pedidos_collection = db["pedidos"]
 
 
-INVENTORY_URL = "http://127.0.0.1:9102"
+INVENTORY_URL = os.getenv("INVENTORY_URL", "http://127.0.0.1:9102")
 
 
 def serialize_pedido(pedido):
